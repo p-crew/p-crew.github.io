@@ -66,7 +66,8 @@
 </label>
 <button type="button" style="font: inherit; cursor: pointer; min-height: 44px; padding: 0 18px; border-radius: 999px; border: 1px solid #244F46; background: #244F46; color: #FFFFFF; font-size: 14px" data-on="click:again">New path</button>
 </div>
-<figcaption style="margin-top: 14px; font-size: 14px; color: #515C55">A predator–prey model with independent multiplicative noise on each population, after the example in the dissertation. The noise is diagonal, so the Milstein scheme needs no iterated integrals: each component gets the correction \(\tfrac12\sigma^2 X(\Delta W^2 - h)\). Here \(h = 0.005\), \(\beta_1 = 0.75\), \(\alpha_1 = 1\), \(\alpha_2 = 0.5\), \(\beta_2 = 0.75\), started from \((1, 1)\); the deterministic orbit is computed with Runge–Kutta. Even with \(\sigma = 0.05\) the path leaves the closed orbit within a few cycles, and wanders between neighbouring orbits.</figcaption>
+<p data-show="zeroNoise" role="status" style="margin: 10px 0 0; font-size: 13px; color: #515C55">At \(\sigma=0\), the Milstein update reduces to Euler. Its departure from the Runge–Kutta reference is discretisation error.</p>
+<figcaption style="margin-top: 14px; font-size: 14px; color: #515C55">A predator–prey model with independent multiplicative noise on each population, after the example in the dissertation. The diffusion vector fields commute, so Milstein needs no simulated Lévy areas: each component gets the correction \(\tfrac12\sigma^2 X(\Delta W^2-h)\). Here \(h=0.005\), \(\beta_1=0.75\), \(\alpha_1=1\), \(\alpha_2=0.5\), \(\beta_2=0.75\), started from \((1,1)\); the deterministic reference uses Runge–Kutta. The simulated path includes both stochastic effects and time-discretisation error; at zero noise, all discrepancy from the reference is numerical.</figcaption>
 </figure>
 `;
 
@@ -162,7 +163,7 @@
         tsX: series(this.sto, 0, upto), tsY: series(this.sto, 1, upto),
         phDet: phase(this.det, Math.min(this.det.length, 360)), ph: phase(this.sto, upto),
         headX: px(Math.min(head[0], 8)).toFixed(1), headY: Math.max(-50, py(head[1])).toFixed(1),
-        sigma: st.sigma, sigLabel: st.sigma.toFixed(3),
+        sigma: st.sigma, sigLabel: st.sigma.toFixed(3), zeroNoise: st.sigma === 0,
         setSigma: function (e) { var v = parseFloat(e.target.value); self.simulate(v); self.setState({ sigma: v }); },
         again: function () { var sd = st.seed + 1; self.noise(sd); self.simulate(st.sigma); self.setState({ seed: sd }); self.play(); }
       };

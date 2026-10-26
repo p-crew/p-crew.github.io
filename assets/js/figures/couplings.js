@@ -6,7 +6,7 @@
 <figure style="margin: 0; font-family: 'IBM Plex Sans', system-ui, sans-serif; color: #203D36; background: #FFFFFF; border: 1px solid #D9DDD2; border-radius: 4px; padding: 24px; box-sizing: border-box; font-size: 15px; line-height: 1.55">
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 20px">
 <div>
-<p style="margin: 0 0 4px; font-size: 14px">Feedback  \(c = \psi_\varepsilon(m) = (\varepsilon + m)^{-1/\gamma_1}\)</p>
+<p style="margin: 0 0 4px; font-size: 14px">Feedback shape  \(\psi_\varepsilon(m) = (\varepsilon + m^+)^{-1/\gamma_1}\)</p>
 <svg viewBox="0 0 360 272" role="img" aria-label="The consumption feedback map on a log scale: the singular map blows up as m tends to zero, the regularised map stays bounded." style="display: block; width: 100%; height: auto">
 <defs><clipPath id="cpPsi"><rect x="44" y="16" width="300" height="228"></rect></clipPath></defs>
 <line x1="44" x2="344" y1="16" y2="16" stroke="#EDF0E7"></line>
@@ -29,7 +29,7 @@
 </svg>
 </div>
 <div>
-<p style="margin: 0 0 4px; font-size: 14px">Terminal condition  \(P_T = \lambda(\varepsilon + w_T)^{-\gamma_2}\)</p>
+<p style="margin: 0 0 4px; font-size: 14px">Terminal coupling  \(g_\varepsilon(w) = \lambda(\varepsilon + w^+)^{-\gamma_2}\)</p>
 <svg viewBox="0 0 360 272" role="img" aria-label="The terminal marginal utility on a log scale: the singular map blows up as terminal wealth tends to zero, the regularised map stays bounded." style="display: block; width: 100%; height: auto">
 <defs><clipPath id="cpG"><rect x="44" y="16" width="300" height="228"></rect></clipPath></defs>
 <line x1="44" x2="344" y1="16" y2="16" stroke="#EDF0E7"></line>
@@ -66,9 +66,9 @@
 <input type="range" min="0.3" max="3" step="0.05" style="accent-color: #244F46; width: 100%; height: 28px; margin: 0" data-bind="value:g2" data-on="input:setG2">
 </label>
 </div>
-<p data-show="ok" style="margin: 12px 0 0; font-size: 14px; color: #244F46">\(\gamma_2 \le \gamma_1\): covered by the short-time well-posedness result.</p>
+<p data-show="ok" style="margin: 12px 0 0; font-size: 14px; color: #244F46">\(\gamma_2 \le \gamma_1\): satisfies the risk-aversion condition for short-time well-posedness of the singular system, under the theorem's other assumptions.</p>
 <p data-show="notOk" style="margin: 12px 0 0; font-size: 14px; color: #9D5C3E">\(\gamma_2 > \gamma_1\): outside the short-time well-posedness result.</p>
-<figcaption style="margin-top: 12px; font-size: 14px; color: #515C55">For CRRA utilities the adjoint FBSDE couples through two maps that blow up at the boundary (dashed). Replacing \(m\) and \(w\) by \(\varepsilon + m\) and \(\varepsilon + w\) gives monotone, Lipschitz couplings (solid) to which classical continuation theory applies. The open problem is the limit \(\varepsilon \downarrow 0\).</figcaption>
+<figcaption style="margin-top: 12px; font-size: 14px; color: #515C55">The dashed curves are the singular CRRA couplings. The solid curves use \(x^+ = \max(x,0)\): for fixed \(\varepsilon > 0\), the extensions are monotone and globally Lipschitz, as required by the regularised continuation argument. Only non-negative arguments are plotted, with \(\lambda = 1\) and deterministic prefactors normalised to one. Passing to \(\varepsilon \downarrow 0\) requires further positivity, compactness and integrability estimates.</figcaption>
 </figure>
 `;
 
@@ -97,7 +97,7 @@
       for (var i = 0; i <= 160; i++) {
         var x = 2 * Math.pow(i / 160, 2.2);
         if (eps === 0 && x < 1e-5) x = 1e-5;
-        d += (i ? 'L' : 'M') + sx(x).toFixed(1) + ' ' + Math.max(-40, Math.min(300, sy(fn(eps + x)))).toFixed(1);
+        d += (i ? 'L' : 'M') + sx(x).toFixed(1) + ' ' + Math.max(-40, Math.min(300, sy(fn(eps + Math.max(x, 0))))).toFixed(1);
       }
       return d;
     }

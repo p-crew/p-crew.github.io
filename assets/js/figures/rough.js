@@ -13,9 +13,11 @@
 <g clip-path="url(#cpX)" fill="none" stroke-linejoin="round">
 <path stroke="#203D36" stroke-width="1.6" data-bind="d:drvPath"></path>
 <path stroke="#3E8E7E" stroke-width="1.3" stroke-opacity="0.9" data-bind="d:recPath"></path>
+<g data-for="invalidMarks" data-as="m" data-tpl="&lt;line x1=&quot;{{m.x}}&quot; x2=&quot;{{m.x}}&quot; y1=&quot;150&quot; y2=&quot;158&quot; stroke=&quot;#9D5C3E&quot; stroke-width=&quot;2&quot;&gt;&lt;/line&gt;"></g>
 </g>
 <text x="40" font-family="IBM Plex Mono, monospace" font-size="11" fill="#657061" text-anchor="end" data-bind="y:xZeroL">0</text>
 </svg>
+<p data-show="hasInvalid" role="status" style="margin: 4px 0 0; font-size: 13px; color: #9D5C3E"><span data-text="invalidLabel"></span> observations outside the inverse's domain. Gaps and rust marks indicate unavailable recovery; the error below uses valid samples only.</p>
 <p style="margin: 8px 0 0; font-size: 13px; color: #515C55"><span style="display: inline-block; width: 18px; height: 2px; background: #203D36; vertical-align: middle"></span> solution \(Y\)   <span style="display: inline-block; width: 18px; border-top: 2px dashed #9D5C3E; vertical-align: middle"></span> zeros of \(f\)</p>
 <svg viewBox="0 0 720 170" role="img" aria-label="The solution path, which cannot cross the zeros of the vector field." style="display: block; width: 100%; height: auto; margin-top: 4px">
 <defs><clipPath id="cpY"><rect x="48" y="12" width="652" height="146"></rect></clipPath></defs>
@@ -47,11 +49,11 @@
 </label>
 </div>
 <div style="display: flex; flex-direction: column; gap: 10px; align-items: flex-start; font-size: 13px; color: #515C55">
-<span>\(\min_t f(Y_t) =\) <span style="font-family: 'IBM Plex Mono', monospace"><span data-text="minF"></span></span><br>\(\max_t |\hat X_t - X_t| =\) <span style="font-family: 'IBM Plex Mono', monospace"><span data-text="maxErr"></span></span></span>
+<span>\(\min_t f(Y_t) =\) <span style="font-family: 'IBM Plex Mono', monospace"><span data-text="minF"></span></span><br>max. \(|\hat X_t - X_t|\) (valid samples): <span style="font-family: 'IBM Plex Mono', monospace"><span data-text="maxErr"></span></span></span>
 <button type="button" style="font: inherit; cursor: pointer; min-height: 44px; padding: 0 18px; border-radius: 999px; border: 1px solid #B8C1B6; background: #FFFFFF; color: #203D36; font-size: 14px" data-on="click:newDriver">New driver</button>
 </div>
 </div>
-<figcaption style="margin-top: 14px; font-size: 14px; color: #515C55">For a scalar equation driven by a geometric rough path, with \(f\) nowhere zero, the driver is recovered exactly from the solution by \(X_t = X_0 + \varphi(Y_t) - \varphi(Y_0)\), where \(\varphi(y) = \int_0^y \frac{\mathrm{d}u}{f(u)}\). Here \(Y\) is observed with small noise. For \(c < 1\), \(f\) has zeros, the solution is confined between them, and the reconstruction error grows like \(\text{noise}/f(Y)\).</figcaption>
+<figcaption style="margin-top: 14px; font-size: 14px; color: #515C55">For a scalar geometric rough equation, the change of variables \(\varphi(y) = \int_0^y \frac{\mathrm{d}u}{f(u)}\) recovers \(X_t-X_0 = \varphi(Y_t)-\varphi(Y_0)\) on the interval containing \(Y_0\) where \(f\ne0\). Here \(X_t=2.2B_t\), \(X_0=Y_0=0\), and Gaussian observation noise is added to the solution. For \(c\le1\), the solution stays between the nearest zeros of \(f\); observations on or beyond those boundaries have no inverse on this interval. Within the interval, small observation errors are amplified locally by \(1/f(Y)\). Both plots scale to the displayed paths.</figcaption>
 </figure>
 `;
 
@@ -82,66 +84,75 @@
       return this.drvCache;
     }
     flow(c) {
-      // Theta(s): the flow of y' = f(y) from y0 = 0, so that Y_t = Theta(X_t) for a geometric scalar driver
+      // Exact scalar flow Theta' = c + cos(Theta), Theta(0) = 0.
+      // The half-angle substitution gives hyperbolic, rational and periodic
+      // forms for c < 1, c = 1 and c > 1 respectively. No finite lookup domain.
       if (this.flowCache && this.flowCache.c === c) return this.flowCache;
-      var S = 8, h = 0.005, M = Math.round(S / h);
-      var f = function (y) { return c + Math.cos(y); };
-      var run = function (sign) {
-        var out = [0], y = 0;
-        for (var k = 0; k < M; k++) {
-          var k1 = sign * f(y), k2 = sign * f(y + h * k1 / 2), k3 = sign * f(y + h * k2 / 2), k4 = sign * f(y + h * k3);
-          y += h * (k1 + 2 * k2 + 2 * k3 + k4) / 6;
-          out.push(y);
-        }
-        return out;
-      };
-      var fwd = run(1), bwd = run(-1), th = [];
-      for (var a = M; a >= 1; a--) th.push(bwd[a]);
-      for (var b = 0; b <= M; b++) th.push(fwd[b]);
-      this.flowCache = { c: c, th: th, S: S, h: h };
+      var theta, phi, boundary = c <= 1 ? Math.acos(-c) : Infinity;
+      if (c < 1) {
+        var k = Math.sqrt((1 - c) * (1 + c)), scale = Math.sqrt((1 + c) / (1 - c));
+        theta = function (s) { return 2 * Math.atan(scale * Math.tanh(k * s / 2)); };
+        phi = function (y) {
+          if (Math.abs(y) >= boundary) return null;
+          // This logarithmic form remains accurate close to either boundary.
+          return (Math.log(Math.sin((boundary + y) / 2)) - Math.log(Math.sin((boundary - y) / 2))) / k;
+        };
+      } else if (c === 1) {
+        theta = function (s) { return 2 * Math.atan(s); };
+        phi = function (y) { return Math.abs(y) < Math.PI ? Math.tan(y / 2) : null; };
+      } else {
+        var omega = Math.sqrt((c - 1) * (c + 1)), scaleUp = Math.sqrt((c + 1) / (c - 1));
+        theta = function (s) {
+          var angle = omega * s / 2, turns = Math.floor((angle + Math.PI / 2) / Math.PI), u = angle - turns * Math.PI;
+          return 2 * Math.atan2(scaleUp * Math.sin(u), Math.cos(u)) + 2 * Math.PI * turns;
+        };
+        phi = function (y) {
+          var turns = Math.floor((y + Math.PI) / (2 * Math.PI)), u = y - 2 * Math.PI * turns;
+          return (2 * Math.atan2(Math.sin(u / 2) / scaleUp, Math.cos(u / 2)) + 2 * Math.PI * turns) / omega;
+        };
+      }
+      this.flowCache = { c: c, theta: theta, phi: phi, boundary: boundary };
       return this.flowCache;
     }
-    renderVals() {
-      var self = this, st = this.state, c = st.c, noise = Math.pow(10, st.logNoise);
-      var d = this.driver(st.rSeed), X = d.X, N = X.length - 1, F = this.flow(c), th = F.th, last = th.length - 1;
-      var theta = function (s) {
-        var u = Math.max(0, Math.min(last, (s + F.S) / F.h)), i = Math.min(last - 1, Math.floor(u));
-        return th[i] + (u - i) * (th[i + 1] - th[i]);
-      };
-      var phi = function (y) {
-        if (y <= th[0]) return -F.S;
-        if (y >= th[last]) return F.S;
-        var lo = 0, hi = last;
-        while (hi - lo > 1) { var mid = (lo + hi) >> 1; if (th[mid] <= y) lo = mid; else hi = mid; }
-        var gap = th[hi] - th[lo];
-        return -F.S + F.h * (lo + (gap > 0 ? (y - th[lo]) / gap : 0));
-      };
-      var Y = [], R = [], minF = Infinity, maxErr = 0;
-      for (var i = 0; i <= N; i++) {
-        var y = theta(X[i]);
+    recovery() {
+      var st = this.state, c = st.c, noise = Math.pow(10, st.logNoise), d = this.driver(st.rSeed), F = this.flow(c);
+      var X = d.X, Y = [], R = [], invalid = [], minF = Infinity, maxErr = 0;
+      for (var i = 0; i < X.length; i++) {
+        var y = F.theta(X[i]);
         Y.push(y);
         minF = Math.min(minF, c + Math.cos(y));
-        var rec = phi(y + noise * d.E[i]);
+        var rec = F.phi(y + noise * d.E[i]);
+        if (rec === null || !Number.isFinite(rec)) { rec = null; invalid.push(i); }
+        else maxErr = Math.max(maxErr, Math.abs(rec - X[i]));
         R.push(rec);
-        maxErr = Math.max(maxErr, Math.abs(rec - X[i]));
       }
+      return { X: X, Y: Y, R: R, invalid: invalid, minF: minF, maxErr: invalid.length < X.length ? maxErr : null };
+    }
+    renderVals() {
+      var self = this, st = this.state, c = st.c, noise = Math.pow(10, st.logNoise), data = this.recovery();
+      var X = data.X, Y = data.Y, R = data.R, N = X.length - 1;
       var sx = function (i) { return 48 + 652 * i / N; };
       var range = function (arr) { var lo = Infinity, hi = -Infinity; for (var k = 0; k < arr.length; k++) { lo = Math.min(lo, arr[k]); hi = Math.max(hi, arr[k]); } return [lo, hi]; };
-      var xr = range(X), xpad = 0.15 * (xr[1] - xr[0]) + 0.1, xlo = xr[0] - xpad, xhi = xr[1] + xpad;
+      var xr = range(X.concat(R.filter(function (v) { return v !== null; }))), xpad = 0.15 * (xr[1] - xr[0]) + 0.1, xlo = xr[0] - xpad, xhi = xr[1] + xpad;
       var syX = function (v) { return 158 - (v - xlo) / (xhi - xlo) * 146; };
       var yr = range(Y), ypad = 0.12 * (yr[1] - yr[0]) + 0.15, ylo = yr[0] - ypad, yhi = yr[1] + ypad;
       var syY = function (v) { return 158 - (v - ylo) / (yhi - ylo) * 146; };
       var line = function (arr, f) {
-        var s = '';
-        for (var k = 0; k <= N; k++) s += (k ? 'L' : 'M') + sx(k).toFixed(1) + ' ' + Math.max(-200, Math.min(400, f(arr[k]))).toFixed(1);
+        var s = '', connected = false;
+        for (var k = 0; k <= N; k++) {
+          if (arr[k] === null) { connected = false; continue; }
+          s += (connected ? 'L' : 'M') + sx(k).toFixed(1) + ' ' + f(arr[k]).toFixed(1);
+          connected = true;
+        }
         return s;
       };
       var zeros = [];
-      if (c < 1) {
+      if (c <= 1) {
         var a0 = Math.acos(-c);
+        var seen = {};
         for (var m = -3; m <= 3; m++) {
           [a0 + 2 * Math.PI * m, -a0 + 2 * Math.PI * m].forEach(function (z) {
-            if (z > ylo && z < yhi) zeros.push({ y: syY(z).toFixed(1) });
+            if (z > ylo && z < yhi && !seen[z]) { zeros.push({ y: syY(z).toFixed(1) }); seen[z] = true; }
           });
         }
       }
@@ -152,11 +163,13 @@
       var b0 = fx(Math.max(-Math.PI, yr[0])), b1 = fx(Math.min(Math.PI, yr[1]));
       return {
         drvPath: line(X, syX), recPath: line(R, syX), solPath: line(Y, syY),
+        invalidMarks: data.invalid.map(function (i) { return { x: sx(i).toFixed(1) }; }),
+        hasInvalid: data.invalid.length > 0, invalidLabel: data.invalid.length + ' / ' + X.length,
         xZero: syX(0).toFixed(1), xZeroL: (syX(0) + 4).toFixed(1),
         zeroLines: zeros, yTopLabel: yhi.toFixed(1), yBotLabel: ylo.toFixed(1),
         fPath: fPath, fZero: fy(0).toFixed(1), bandX: b0.toFixed(1), bandW: Math.max(0, b1 - b0).toFixed(1),
         c: c, cLabel: c.toFixed(2), logNoise: st.logNoise, noiseLabel: noise.toExponential(1),
-        minF: minF.toFixed(3), maxErr: maxErr.toFixed(3),
+        minF: data.minF.toFixed(3), maxErr: data.maxErr === null ? '—' : data.maxErr.toFixed(3),
         setC: function (e) { self.setState({ c: parseFloat(e.target.value) }); },
         setNoise: function (e) { self.setState({ logNoise: parseFloat(e.target.value) }); },
         newDriver: function () { self.setState({ rSeed: st.rSeed + 1 }); }
