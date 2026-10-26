@@ -3,44 +3,46 @@
   'use strict';
 
   var markup = String.raw`
-<figure style="margin: 0; font-family: 'IBM Plex Sans', system-ui, sans-serif; color: #203D36; background: #FFFFFF; border: 1px solid #D9DDD2; border-radius: 4px; padding: 24px; box-sizing: border-box; font-size: 15px; line-height: 1.55">
-<p style="margin: 0 0 16px; font-size: 14px; color: #515C55">\(\displaystyle \frac{\mathrm{d}\sigma_i}{\mathrm{d}t} = -\gamma(t)\,\sigma_i + \beta\sum_{j \in \mathcal{N}_i} S_j + D\,\Delta\sigma_i, \qquad \gamma(t) = \gamma_0\,\frac{|\Omega|}{1 + |\Omega| - A(t)}\)</p>
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); gap: 24px; align-items: start">
+<figure class="fig">
+<div class="fig-model">\(\displaystyle \frac{\mathrm{d}\sigma_i}{\mathrm{d}t} = -\gamma(t)\,\sigma_i + \beta\sum_{j \in \mathcal{N}_i} S_j + D\,\Delta\sigma_i, \qquad \gamma(t) = \gamma_0\,\frac{|\Omega|}{1 + |\Omega| - A(t)}\)</div>
+<div class="fig-plots">
 <div>
-<p style="margin: 0 0 8px; font-family: 'IBM Plex Sans', sans-serif; font-size: 13px; color: #515C55"><span style="display: inline-block; width: 10px; height: 10px; background: #203D36"></span> dead   <span style="display: inline-block; width: 10px; height: 10px; background: #9D5C3E"></span> stress near threshold</p>
-<canvas width="560" height="560" role="img" aria-label="Hexagonal lattice of cells; the lesion of dead cells grows from the centre and is surrounded by a band of stressed cells." style="display: block; width: 100%; max-width: 560px; height: auto; aspect-ratio: 1 / 1; background: #F6F5EF" data-ref="setCanvas"></canvas>
+<ul class="fig-legend">
+<li><span class="sw box c-ink"></span>dead</li>
+<li><span class="sw ramp"></span>stress \(\sigma_i/\theta_i\)</li>
+</ul>
+<canvas width="560" height="560" role="img" aria-label="Hexagonal lattice of cells; the lesion of dead cells grows from the centre and is surrounded by a band of stressed cells." style="max-width: 560px; aspect-ratio: 1 / 1; background: #F6F5EF" data-ref="setCanvas"></canvas>
 </div>
-<div style="min-width: 0">
-<p style="margin: 0 0 8px; font-size: 13px; color: #515C55">lesion area \(A(t)/|\Omega|\); grey: finished runs, labelled by \(\theta\)</p>
-<svg viewBox="0 0 520 300" role="img" aria-label="Lesion area fraction against time for the current run and for previous runs at other thresholds." style="display: block; width: 100%; height: auto">
-<line x1="44" x2="504" y1="20" y2="20" stroke="#EDF0E7"></line>
+<div>
+<p class="fig-label">Lesion area \(A(t)/|\Omega|\); earlier runs in grey, labelled by \(\theta\)</p>
+<svg viewBox="0 0 580 300" role="img" aria-label="Lesion area fraction against time for the current run and for previous runs at other thresholds.">
 <line x1="44" x2="504" y1="140" y2="140" stroke="#EDF0E7"></line>
-<line x1="44" x2="504" y1="260" y2="260" stroke="#B8C1B6"></line>
-<line x1="44" x2="44" y1="20" y2="260" stroke="#B8C1B6"></line>
-<text x="36" y="24" font-family="IBM Plex Mono, monospace" font-size="11" fill="#657061" text-anchor="end">1</text>
-<text x="36" y="144" font-family="IBM Plex Mono, monospace" font-size="11" fill="#657061" text-anchor="end">0.5</text>
-<text x="36" y="264" font-family="IBM Plex Mono, monospace" font-size="11" fill="#657061" text-anchor="end">0</text>
-<text x="44" y="280" font-family="IBM Plex Mono, monospace" font-size="11" fill="#657061" text-anchor="middle">0</text>
-<text x="274" y="280" font-family="IBM Plex Mono, monospace" font-size="11" fill="#657061" text-anchor="middle">2500</text>
-<text x="504" y="280" font-family="IBM Plex Mono, monospace" font-size="11" fill="#657061" text-anchor="middle">5000</text>
-<text x="504" y="296" font-family="IBM Plex Mono, monospace" font-size="11" fill="#657061" text-anchor="end">t</text>
-<g data-for="history" data-as="h" data-tpl="&lt;path d=&quot;{{h.d}}&quot; fill=&quot;none&quot; stroke=&quot;#A3ACA0&quot; stroke-width=&quot;1.3&quot;&gt;&lt;/path&gt;&lt;text x=&quot;{{h.lx}}&quot; y=&quot;{{h.ly}}&quot; font-family=&quot;IBM Plex Mono, monospace&quot; font-size=&quot;10&quot; fill=&quot;#657061&quot;&gt;{{h.label}}&lt;/text&gt;"></g>
-<path fill="none" stroke="#9D5C3E" stroke-width="2.2" data-bind="d:curPath"></path>
+<path d="M44 20V260H504" fill="none" stroke="#B8C1B6"></path>
+<g font-family="IBM Plex Mono, monospace" font-size="16" fill="#657061" text-anchor="end">
+<text x="36" y="264">0</text><text x="36" y="144">0.5</text><text x="36" y="24">1</text>
+</g>
+<g font-family="IBM Plex Mono, monospace" font-size="16" fill="#657061" text-anchor="middle">
+<text x="44" y="280">0</text><text x="274" y="280">2500</text><text x="504" y="280">5000</text>
+</g>
+<text x="274" y="298" font-family="IBM Plex Sans, sans-serif" font-size="16" fill="#657061" text-anchor="middle">time steps</text>
+<g data-for="history" data-as="h" data-tpl="&lt;path d=&quot;{{h.d}}&quot; fill=&quot;none&quot; stroke=&quot;#A3ACA0&quot; stroke-width=&quot;1.4&quot;&gt;&lt;/path&gt;&lt;text x=&quot;512&quot; y=&quot;{{h.ly}}&quot; font-family=&quot;IBM Plex Mono, monospace&quot; font-size=&quot;16&quot; fill=&quot;#657061&quot;&gt;{{h.label}}&lt;/text&gt;"></g>
+<path fill="none" stroke="#9D5C3E" stroke-width="2.4" data-bind="d:curPath"></path>
 </svg>
-<div style="display: grid; gap: 12px; margin-top: 16px">
-<label style="display: flex; flex-direction: column; gap: 2px; font-size: 14px; color: #515C55">
-<span>death threshold \(\theta =\) <span style="font-family: 'IBM Plex Mono', monospace"><span data-text="thetaLabel"></span></span></span>
-<input type="range" min="0.6" max="1.6" step="0.02" style="accent-color: #244F46; width: 100%; height: 28px; margin: 0" data-bind="value:theta" data-on="input:setTheta">
-</label>
-<div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center">
-<button type="button" style="font: inherit; cursor: pointer; min-height: 44px; padding: 0 18px; border-radius: 999px; border: 1px solid #244F46; background: #244F46; color: #FFFFFF; font-size: 14px" data-on="click:toggle"><span data-text="toggleLabel"></span></button>
-<button type="button" style="font: inherit; cursor: pointer; min-height: 44px; padding: 0 18px; border-radius: 999px; border: 1px solid #B8C1B6; background: #FFFFFF; color: #203D36; font-size: 14px" data-on="click:restart">Restart</button>
-<span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #515C55">\(t =\) <span data-text="tLabel"></span>   \(A/|\Omega| =\) <span data-text="aLabel"></span></span>
+<div class="fig-controls" style="grid-template-columns: minmax(0, 1fr)">
+<label class="fig-slider"><span>Death threshold \(\theta\) <span class="v" data-text="thetaLabel"></span></span>
+<input type="range" min="0.6" max="1.6" step="0.02" aria-label="death threshold theta" data-bind="value:theta" data-on="input:setTheta"></label>
+<div class="fig-actions">
+<button type="button" class="fig-btn solid" data-on="click:toggle"><span data-text="toggleLabel"></span></button>
+<button type="button" class="fig-btn" data-on="click:restart">Restart</button>
 </div>
 </div>
+<dl class="fig-readout">
+<div><dt>Step \(t\)</dt><dd data-text="tLabel"></dd></div>
+<div><dt>Lesion area \(A/|\Omega|\)</dt><dd data-text="aLabel"></dd></div>
+</dl>
 </div>
 </div>
-<figcaption style="margin-top: 18px; font-size: 14px; color: #515C55">A cell dies once \(\sigma_i\) exceeds its threshold \(\theta_i\); the "waste removal" decay rate \(\gamma(t)\) grows with the lesion area \(A(t)\). This is a reimplementation of the team's model, run in your browser. Thresholds \(\theta_i\) are drawn uniformly within 15% of \(\theta\), and cells near the centre also die spontaneously at a small rate. Try runs either side of \(\theta \approx 1.15\): the final lesion area changes abruptly there, as in the phase transition found in the project. Parameters are illustrative (\(\beta = 0.03\), \(\gamma_0 = 0.005\), \(D = 0.15\)), so the critical \(\theta\) differs from the original slides.</figcaption>
+<figcaption class="fig-caption">A cell dies once its stress \(\sigma_i\) exceeds a threshold \(\theta_i\), drawn within 15% of \(\theta\); clearance \(\gamma(t)\) rises with the lesion area \(A(t)\). Near \(\theta \approx 1.15\) the final lesion size jumps, the phase transition found in the project. Illustrative parameters: \(\beta = 0.03\), \(\gamma_0 = 0.005\), \(D = 0.15\).</figcaption>
 </figure>
 `;
 
@@ -156,6 +158,17 @@
       for (var i = 0; i < samples.length; i++) d += (i ? 'L' : 'M') + (44 + 460 * i * 25 / 5000).toFixed(1) + ' ' + (260 - 240 * samples[i]).toFixed(1);
       return d;
     }
+    // End-of-run labels sit right of the plot, spaced so they never overlap.
+    labelled(history) {
+      var self = this, out = history.map(function (h) {
+        return { d: self.curve(h.samples), label: 'θ ' + h.theta.toFixed(2), y: 264 - 240 * h.samples[h.samples.length - 1] };
+      });
+      var order = out.slice().sort(function (a, b) { return a.y - b.y; });
+      for (var i = 1; i < order.length; i++) order[i].y = Math.max(order[i].y, order[i - 1].y + 18);
+      for (var j = order.length - 1; j >= 0; j--) order[j].y = Math.min(order[j].y, j === order.length - 1 ? 292 : order[j + 1].y - 18);
+      out.forEach(function (h) { h.ly = h.y.toFixed(1); });
+      return out;
+    }
     renderVals() {
       var self = this, st = this.state, samples = this.samples || [0];
       var restartWith = function (theta) {
@@ -165,10 +178,7 @@
       return {
         setCanvas: this.setCanvas,
         curPath: this.curve(samples),
-        history: st.history.map(function (h) {
-          var last = h.samples[h.samples.length - 1];
-          return { d: self.curve(h.samples), label: 'θ=' + h.theta.toFixed(2), lx: 446, ly: (256 - 240 * last).toFixed(1) };
-        }),
+        history: this.labelled(st.history),
         theta: st.theta, thetaLabel: st.theta.toFixed(2),
         tLabel: String(this.t || 0), aLabel: (samples[samples.length - 1] || 0).toFixed(3),
         toggleLabel: st.running ? 'Pause' : (this.t >= 5000 ? 'Run again' : 'Resume'),

@@ -2,77 +2,77 @@
 (function () {
   'use strict';
 
+  // Typographic minus sign for negative numbers.
+  function num(v, digits) { return v.toFixed(digits).replace(/^-(?=.*[1-9])/, '−').replace(/^-/, ''); }
+
   var markup = String.raw`
-<figure style="margin: 0; font-family: 'IBM Plex Sans', system-ui, sans-serif; color: #203D36; background: #FFFFFF; border: 1px solid #D9DDD2; border-radius: 4px; padding: 24px; box-sizing: border-box; font-size: 15px; line-height: 1.55">
-<p style="margin: 0; font-size: 14px; color: #515C55">\(\mathrm{d}\eta_s = \mu\eta_s\,\mathrm{d}s + \sigma\eta_s\,\mathrm{d}B_s\), equal CRRA utilities with \(u_i'(x) = x^{-\gamma}\) (logarithmic utility when \(\gamma = 1\))</p>
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 20px; margin-top: 16px">
+<figure class="fig">
+<div class="fig-model">
+<div>Income \(\mathrm{d}\eta_s = \mu\eta_s\,\mathrm{d}s + \sigma\eta_s\,\mathrm{d}B_s\); CRRA utilities \(u'(x) = x^{-\gamma}\)</div>
+<div>\(\chi = r - \delta - \gamma\mu + \tfrac12\gamma(\gamma+1)\sigma^2\)</div>
+</div>
+<div class="fig-plots">
 <div>
-<p style="margin: 0 0 6px; font-size: 13px; color: #515C55">Parameter regime (click to move). Shaded: \(\sigma > 0,\ \chi < 0\)</p>
-<svg viewBox="0 0 600 360" role="img" aria-label="Income volatility and drift. For positive volatility in the shaded region, the theorem excludes admissible feedback solutions for sufficiently large horizons. The zero-volatility axis is excluded." style="display: block; width: 100%; height: auto; cursor: crosshair" data-on="click:pick">
+<p class="fig-label">Shaded where \(\chi &lt; 0\); click to move \((\sigma, \mu)\)</p>
+<svg viewBox="0 0 600 360" role="img" aria-label="Income volatility and drift. For positive volatility in the shaded region, the theorem excludes admissible feedback solutions for sufficiently large horizons. The zero-volatility axis is excluded." style="cursor: crosshair" data-on="click:pick">
 <defs><clipPath id="cpPlane"><rect x="56" y="24" width="520" height="296"></rect></clipPath></defs>
 <path fill="#9D5C3E" fill-opacity="0.13" clip-path="url(#cpPlane)" data-bind="d:regionPath"></path>
-<line x1="56" x2="576" y1="24" y2="24" stroke="#EDF0E7"></line>
-<line x1="56" x2="576" y1="98" y2="98" stroke="#EDF0E7"></line>
-<line x1="56" x2="576" y1="172" y2="172" stroke="#EDF0E7"></line>
-<line x1="56" x2="576" y1="246" y2="246" stroke="#B8C1B6"></line>
-<line x1="56" x2="576" y1="320" y2="320" stroke="#B8C1B6"></line>
-<line x1="56" x2="56" y1="24" y2="320" stroke="#B8C1B6"></line>
-<text x="48" y="28" fill="#657061" font-family="IBM Plex Mono, monospace" font-size="12" text-anchor="end">0.3</text>
-<text x="48" y="102" fill="#657061" font-family="IBM Plex Mono, monospace" font-size="12" text-anchor="end">0.2</text>
-<text x="48" y="176" fill="#657061" font-family="IBM Plex Mono, monospace" font-size="12" text-anchor="end">0.1</text>
-<text x="48" y="250" fill="#657061" font-family="IBM Plex Mono, monospace" font-size="12" text-anchor="end">0</text>
-<text x="48" y="324" fill="#657061" font-family="IBM Plex Mono, monospace" font-size="12" text-anchor="end">−0.1</text>
-<text x="56" y="340" fill="#657061" font-family="IBM Plex Mono, monospace" font-size="12" text-anchor="middle">0</text>
-<text x="229.3" y="340" fill="#657061" font-family="IBM Plex Mono, monospace" font-size="12" text-anchor="middle">0.2</text>
-<text x="402.7" y="340" fill="#657061" font-family="IBM Plex Mono, monospace" font-size="12" text-anchor="middle">0.4</text>
-<text x="576" y="340" fill="#657061" font-family="IBM Plex Mono, monospace" font-size="12" text-anchor="middle">0.6</text>
-<text x="572" y="312" fill="#657061" font-family="Newsreader, serif" font-style="italic" font-size="17" text-anchor="end">σ</text>
-<text x="68" y="44" fill="#657061" font-family="Newsreader, serif" font-style="italic" font-size="17">μ</text>
-<path fill="none" stroke="#9D5C3E" stroke-width="2" clip-path="url(#cpPlane)" data-bind="d:curvePath"></path>
-<circle r="7" stroke="#FFFFFF" stroke-width="2" data-bind="cx:ptX; cy:ptY; fill:ptFill"></circle>
+<path d="M56 24V320H576" fill="none" stroke="#B8C1B6" stroke-width="1.4"></path>
+<g font-family="IBM Plex Mono, monospace" font-size="18" fill="#657061" text-anchor="end">
+<text x="48" y="29">0.3</text><text x="48" y="103">0.2</text><text x="48" y="177">0.1</text><text x="48" y="251">0</text><text x="48" y="325">−0.1</text>
+</g>
+<g font-family="IBM Plex Mono, monospace" font-size="18" fill="#657061" text-anchor="middle">
+<text x="56" y="346">0</text><text x="229.3" y="346">0.2</text><text x="402.7" y="346">0.4</text><text x="576" y="346">0.6</text>
+</g>
+<text x="566" y="308" fill="#657061" font-family="Newsreader, serif" font-style="italic" font-size="25" text-anchor="end">σ</text>
+<text x="68" y="46" fill="#657061" font-family="Newsreader, serif" font-style="italic" font-size="25">μ</text>
+<path fill="none" stroke="#9D5C3E" stroke-width="2.4" clip-path="url(#cpPlane)" data-bind="d:curvePath"></path>
+<circle r="8" stroke="#FFFFFF" stroke-width="2.5" data-bind="cx:ptX; cy:ptY; fill:ptFill"></circle>
 </svg>
 </div>
 <div>
-<p style="margin: 0 0 6px; font-size: 13px; color: #515C55">Conservative bound \(X_t \le w_0 - (L-1)\int_0^t Y_s\,\mathrm{d}s\)</p>
-<svg viewBox="0 0 600 360" role="img" aria-label="Numerical evaluations of the conservative wealth bound on 40 simulated income paths. Crossings illustrate the large-horizon argument; they do not certify a particular horizon." style="display: block; width: 100%; height: auto">
+<p class="fig-label">40 paths of the wealth bound \(w_0 - (L-1)\int_0^t Y_s\,\mathrm{d}s\)</p>
+<svg viewBox="0 0 600 360" role="img" aria-label="Numerical evaluations of the conservative wealth bound on 40 simulated income paths. Crossings illustrate the large-horizon argument; they do not certify a particular horizon.">
 <defs><clipPath id="cpW"><rect x="56" y="24" width="520" height="296"></rect></clipPath></defs>
 <rect x="56" width="520" fill="#9D5C3E" fill-opacity="0.07" data-bind="y:zeroY; height:negH"></rect>
-<line x1="56" x2="576" y1="24" y2="24" stroke="#EDF0E7"></line>
-<line x1="56" x2="576" stroke="#EDF0E7" data-bind="y1:w1Y; y2:w1Y"></line>
-<line x1="56" x2="576" y1="320" y2="320" stroke="#B8C1B6"></line>
-<line x1="56" x2="56" y1="24" y2="320" stroke="#B8C1B6"></line>
-<line x1="56" x2="576" stroke="#9D5C3E" stroke-dasharray="4 5" stroke-width="1.4" data-bind="y1:zeroY; y2:zeroY"></line>
-<text x="48" fill="#9D5C3E" font-family="IBM Plex Mono, monospace" font-size="12" text-anchor="end" data-bind="y:zeroYL">0</text>
-<text x="48" fill="#657061" font-family="IBM Plex Mono, monospace" font-size="12" text-anchor="end" data-bind="y:w1YL">1</text>
-<text x="56" y="340" fill="#657061" font-family="IBM Plex Mono, monospace" font-size="12" text-anchor="middle">0</text>
-<text x="576" y="340" fill="#657061" font-family="IBM Plex Mono, monospace" font-size="12" text-anchor="middle">ℓ = 1</text>
-<g clip-path="url(#cpW)" fill="none">
-<g data-for="paths" data-as="p" data-tpl="&lt;path d=&quot;{{p.d}}&quot; stroke=&quot;{{p.color}}&quot; stroke-width=&quot;1.3&quot; stroke-opacity=&quot;0.85&quot;&gt;&lt;/path&gt;"></g>
+<path d="M56 24V320H576" fill="none" stroke="#B8C1B6" stroke-width="1.4"></path>
+<line x1="56" x2="576" stroke="#9D5C3E" stroke-width="1.2" stroke-dasharray="5 5" data-bind="y1:zeroY; y2:zeroY"></line>
+<g font-family="IBM Plex Mono, monospace" font-size="18" text-anchor="end">
+<text x="48" fill="#9D5C3E" data-bind="y:zeroYL">0</text>
+<text x="48" fill="#657061" data-bind="y:w1YL">1</text>
 </g>
-<text x="316" y="155" fill="#657061" font-family="IBM Plex Sans, sans-serif" font-size="14" text-anchor="middle" data-show="noBound">Bound unavailable for these settings.</text>
-<text x="316" y="177" fill="#657061" font-family="IBM Plex Sans, sans-serif" font-size="13" text-anchor="middle" data-show="noBound">Requires σ &gt; 0, χ &lt; 0 and T &gt; ℓ + ε.</text>
+<g font-family="IBM Plex Mono, monospace" font-size="18" fill="#657061" text-anchor="middle">
+<text x="56" y="346">0</text><text x="576" y="346">ℓ</text>
+</g>
+<text x="316" y="346" fill="#657061" font-family="Newsreader, serif" font-style="italic" font-size="25" text-anchor="middle">t</text>
+<g clip-path="url(#cpW)" fill="none">
+<g data-for="paths" data-as="p" data-tpl="&lt;path d=&quot;{{p.d}}&quot; stroke=&quot;{{p.color}}&quot; stroke-width=&quot;1.6&quot; stroke-opacity=&quot;0.8&quot;&gt;&lt;/path&gt;"></g>
+</g>
+<g font-family="IBM Plex Sans, sans-serif" fill="#657061" text-anchor="middle" data-show="noBound">
+<text x="316" y="160" font-size="22">No bound for these settings</text>
+<text x="316" y="188" font-size="19">(needs σ &gt; 0, χ &lt; 0 and T &gt; ℓ + ε)</text>
+</g>
 </svg>
 </div>
 </div>
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr)); gap: 10px 24px; margin-top: 16px; padding-top: 16px; border-top: 1px solid #EDF0E7">
-<label style="display: flex; flex-direction: column; gap: 2px; font-size: 13px; color: #515C55"><span>horizon \(T =\) <span style="font-family: 'IBM Plex Mono', monospace"><span data-text="TLabel"></span></span></span><input type="range" min="1" max="80" step="0.5" style="accent-color: #244F46; width: 100%; height: 28px; margin: 0" data-bind="value:T" data-on="input:setT"></label>
-<label style="display: flex; flex-direction: column; gap: 2px; font-size: 13px; color: #515C55"><span>drift \(\mu =\) <span style="font-family: 'IBM Plex Mono', monospace"><span data-text="muLabel"></span></span></span><input type="range" min="-0.1" max="0.3" step="0.005" style="accent-color: #244F46; width: 100%; height: 28px; margin: 0" data-bind="value:mu" data-on="input:setMu"></label>
-<label style="display: flex; flex-direction: column; gap: 2px; font-size: 13px; color: #515C55"><span>volatility \(\sigma =\) <span style="font-family: 'IBM Plex Mono', monospace"><span data-text="sigLabel"></span></span></span><input type="range" min="0" max="0.6" step="0.01" style="accent-color: #244F46; width: 100%; height: 28px; margin: 0" data-bind="value:sig" data-on="input:setSig"></label>
-<label style="display: flex; flex-direction: column; gap: 2px; font-size: 13px; color: #515C55"><span>risk aversion \(\gamma =\) <span style="font-family: 'IBM Plex Mono', monospace"><span data-text="gLabel"></span></span></span><input type="range" min="0.3" max="4" step="0.05" style="accent-color: #244F46; width: 100%; height: 28px; margin: 0" data-bind="value:g" data-on="input:setG"></label>
-<label style="display: flex; flex-direction: column; gap: 2px; font-size: 13px; color: #515C55"><span>interest \(r =\) <span style="font-family: 'IBM Plex Mono', monospace"><span data-text="rLabel"></span></span></span><input type="range" min="-0.02" max="0.1" step="0.005" style="accent-color: #244F46; width: 100%; height: 28px; margin: 0" data-bind="value:r" data-on="input:setR"></label>
-<label style="display: flex; flex-direction: column; gap: 2px; font-size: 13px; color: #515C55"><span>discount \(\delta =\) <span style="font-family: 'IBM Plex Mono', monospace"><span data-text="dLabel"></span></span></span><input type="range" min="0" max="0.15" step="0.005" style="accent-color: #244F46; width: 100%; height: 28px; margin: 0" data-bind="value:d" data-on="input:setD"></label>
+<div class="fig-controls">
+<label class="fig-slider"><span>Horizon \(T\) <span class="v" data-text="TLabel"></span></span><input type="range" min="1" max="80" step="0.5" aria-label="horizon T" data-bind="value:T" data-on="input:setT"></label>
+<label class="fig-slider"><span>Drift \(\mu\) <span class="v" data-text="muLabel"></span></span><input type="range" min="-0.1" max="0.3" step="0.005" aria-label="drift mu" data-bind="value:mu" data-on="input:setMu"></label>
+<label class="fig-slider"><span>Volatility \(\sigma\) <span class="v" data-text="sigLabel"></span></span><input type="range" min="0" max="0.6" step="0.01" aria-label="volatility sigma" data-bind="value:sig" data-on="input:setSig"></label>
+<label class="fig-slider"><span>Risk aversion \(\gamma\) <span class="v" data-text="gLabel"></span></span><input type="range" min="0.3" max="4" step="0.05" aria-label="risk aversion gamma" data-bind="value:g" data-on="input:setG"></label>
+<label class="fig-slider"><span>Interest \(r\) <span class="v" data-text="rLabel"></span></span><input type="range" min="-0.02" max="0.1" step="0.005" aria-label="interest rate r" data-bind="value:r" data-on="input:setR"></label>
+<label class="fig-slider"><span>Discount \(\delta\) <span class="v" data-text="dLabel"></span></span><input type="range" min="0" max="0.15" step="0.005" aria-label="discount rate delta" data-bind="value:d" data-on="input:setD"></label>
 </div>
-<div style="display: flex; flex-wrap: wrap; gap: 10px 36px; margin-top: 14px; font-size: 13px; color: #515C55">
-<span>\(\chi = r - \delta - \gamma\mu + \tfrac12\gamma(\gamma+1)\sigma^2\)<br><span style="font-family: 'IBM Plex Mono', monospace; font-size: 17px"><span data-text="chiLabel"></span></span></span>
-<span>\(L(T) = K_\varepsilon e^{-\chi(T-\varepsilon-\ell)/\gamma}\)<br><span style="font-family: 'IBM Plex Mono', monospace; font-size: 17px; color: #203D36"><span data-text="LLabel"></span></span><br>\(\varepsilon =\) <span data-text="epsLabel"></span>, \(K_\varepsilon =\) <span data-text="KLabel"></span></span>
-<span>simulated bound below 0 at \(\ell\)<br><span style="font-family: 'IBM Plex Mono', monospace; font-size: 17px; color: #9D5C3E"><span data-text="negLabel"></span></span></span>
-<span style="flex: 1 1 240px; align-self: center; font-size: 14px">
-<span data-show="vLong" style="color: #9D5C3E">\(\sigma > 0,\ \chi < 0\): no solution in the stated class for all sufficiently large horizons. This simulation does not determine the threshold \(T^*\).</span>
-<span data-show="vZero" style="color: #515C55">\(\sigma = 0\): income is deterministic. This non-existence theorem requires \(\sigma > 0\).</span>
-<span data-show="vNa" style="color: #244F46">\(\chi \ge 0\): this non-existence argument does not apply.</span>
-</span>
-</div>
-<figcaption style="margin-top: 14px; font-size: 14px; color: #515C55">Consider feedback solutions with positive terminal wealth, finite cumulative consumption and a positive uniformly integrable discounted adjoint. For \(\sigma > 0\), terminal solvency forces wealth to stay non-negative. If also \(\chi < 0\), the consumption bound \(c_t/\eta_t \ge L(T)\) on \([0,\ell]\) eventually contradicts this requirement on a set of positive probability. The plot uses conservative, parameter-dependent \(\varepsilon\) and \(K_\varepsilon\) from the terminal-interval estimates, with \(\lambda = w_0 = \eta_0 = \ell = 1\). Integrals of discounted income \(Y = \Gamma^{-1}\eta\) use trapezoidal quadrature on 40 simulated paths. Crossings illustrate the argument; the simulation is not a finite-horizon non-existence test.</figcaption>
+<dl class="fig-readout">
+<div><dt>\(\chi\)</dt><dd data-text="chiLabel"></dd></div>
+<div><dt>\(L(T) = K_\varepsilon e^{-\chi(T-\varepsilon-\ell)/\gamma}\)</dt><dd data-text="LLabel"></dd></div>
+<div><dt>\(\varepsilon\), \(K_\varepsilon\)</dt><dd><span data-text="epsLabel"></span>, <span data-text="KLabel"></span></dd></div>
+<div><dt>Below zero by \(t = \ell\)</dt><dd class="c-rust" data-text="negLabel"></dd></div>
+</dl>
+<p class="fig-status warn" data-show="vLong" role="status">\(\sigma > 0\), \(\chi &lt; 0\): no admissible solution once \(T\) is large enough. The simulation does not locate the threshold.</p>
+<p class="fig-status quiet" data-show="vZero" role="status">\(\sigma = 0\): deterministic income, which the theorem excludes.</p>
+<p class="fig-status" data-show="vNa" role="status">\(\chi \ge 0\): the argument does not apply.</p>
+<figcaption class="fig-caption">For \(\sigma > 0\), solvency at \(T\) forces wealth to stay non-negative. If also \(\chi &lt; 0\), the consumption floor \(c_t/\eta_t \ge L(T)\) drives this bound below zero with positive probability for large \(T\). Paths turn rust once negative; \(\lambda = w_0 = \eta_0 = \ell = 1\).</figcaption>
 </figure>
 `;
 
@@ -83,12 +83,12 @@
     }
     componentDidMount() {
       var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (reduce) { this.setState({ T: 30 }); return; }
-      var self = this, t0 = performance.now(), dur = 4500;
+      if (reduce) { this.setState({ T: 65 }); return; }
+      var self = this, t0 = performance.now(), dur = 6000;
       var tick = function (now) {
         if (self.touched) return;
         var p = Math.min(1, (now - t0) / dur), e = p * p * (3 - 2 * p);
-        self.setState({ T: 1 + 39 * e });
+        self.setState({ T: Math.round(2 * (1 + 64 * e)) / 2 });
         if (p < 1) self.raf = requestAnimationFrame(tick);
       };
       this.raf = requestAnimationFrame(tick);
@@ -167,8 +167,8 @@
         zeroY: sy(0).toFixed(1), zeroYL: (sy(0) + 4).toFixed(1), negH: (320 - sy(0)).toFixed(1),
         w1Y: sy(1).toFixed(1), w1YL: (sy(1) + 4).toFixed(1),
         T: T, mu: mu, sig: sig, g: g, r: r, d: d,
-        TLabel: T.toFixed(1), muLabel: mu.toFixed(3), sigLabel: sig.toFixed(2), gLabel: g.toFixed(2), rLabel: r.toFixed(3), dLabel: d.toFixed(3),
-        chiLabel: chi.toFixed(4), chiColor: chi < 0 ? '#9D5C3E' : '#244F46',
+        TLabel: T.toFixed(1), muLabel: num(mu, 3), sigLabel: sig.toFixed(2), gLabel: g.toFixed(2), rLabel: num(r, 3), dLabel: d.toFixed(3),
+        chiLabel: num(chi, 4), chiColor: chi < 0 ? '#9D5C3E' : '#244F46',
         LLabel: !estimate.available ? '—' : (L < 1000 ? L.toFixed(3) : L.toExponential(1)),
         epsLabel: estimate.eps.toFixed(3), KLabel: estimate.K.toPrecision(3),
         negLabel: estimate.available ? neg + ' / ' + dB.length : '—',

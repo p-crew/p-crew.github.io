@@ -191,10 +191,72 @@ a:hover { color: var(--rust); }
 }
 .tab[aria-selected="true"] { border-color: var(--teal); background: var(--sage); color: var(--teal); }
 
-/* Figures share these defaults; the figure scripts style their own internals. */
-.fig-panel figure { font-family: var(--sans); }
-.fig-panel button { touch-action: manipulation; }
-.fig-panel button:focus-visible, .fig-panel input:focus-visible { outline: 2px solid var(--rust); outline-offset: 2px; }
+/* Interactive figures: every figure uses the same parts, in this order:
+   model line, plots (label or legend above each), controls, readout, status, caption. */
+.fig {
+  margin: 0; padding: 24px; background: var(--white); border: 1px solid var(--line); border-radius: 4px;
+  font-family: var(--sans); font-size: 15px; line-height: 1.55; color: var(--ink);
+}
+.fig svg, .fig canvas { display: block; width: 100%; height: auto; }
+.fig-model { margin: 0 0 18px; font-size: 14.5px; color: var(--body); overflow-x: auto; overflow-y: hidden; }
+.fig-model > div + div { margin-top: 2px; }
+.fig-plots {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  gap: 20px 28px; align-items: start;
+}
+.fig-plots > div { min-width: 0; }
+.fig-plot + .fig-plot { margin-top: 16px; }
+.fig-label { margin: 0 0 6px; font-size: 13px; color: var(--body); }
+.fig-legend {
+  display: flex; flex-wrap: wrap; gap: 2px 16px; margin: 0 0 6px; padding: 0; list-style: none;
+  font-size: 13px; color: var(--body);
+}
+.fig-legend li { display: inline-flex; align-items: center; gap: 7px; }
+.sw { display: inline-block; width: 18px; border-top: 2px solid; }
+.sw.dash { border-top-style: dashed; }
+.sw.dot { border-top-style: dotted; border-top-width: 3px; }
+.sw.box { width: 11px; height: 11px; border: 0; background: currentColor; }
+.sw.ramp { width: 44px; height: 9px; border: 0; background: linear-gradient(90deg, #edf0e7, #9d5c3e); }
+.c-ink { color: var(--ink); }
+.c-teal { color: var(--teal); }
+.c-teal-light { color: var(--teal-light); }
+.c-rust { color: var(--rust); }
+.c-grey { color: #a3aca0; }
+
+.fig-status {
+  margin: 14px 0 0; padding: 8px 12px; border-left: 2px solid var(--teal); background: var(--sage);
+  font-size: 13.5px; color: var(--ink);
+}
+.fig-status.warn { border-left-color: var(--rust); }
+.fig-status.quiet { border-left-color: #b8c1b6; }
+
+.fig-controls {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr));
+  gap: 12px 28px; align-items: end; margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--sage);
+}
+.fig-slider { display: flex; flex-direction: column; gap: 2px; min-width: 0; font-size: 13px; color: var(--body); }
+.fig-slider .v { font-family: var(--mono); font-size: 12.5px; color: var(--ink); }
+.fig-slider input { width: 100%; height: 28px; margin: 0; accent-color: var(--teal); }
+.fig-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.fig-btn {
+  font: inherit; font-size: 14px; cursor: pointer; touch-action: manipulation;
+  min-height: 40px; padding: 0 16px; border-radius: 999px;
+  border: 1px solid var(--teal); background: var(--white); color: var(--teal);
+}
+.fig-btn:hover { background: var(--sage); }
+.fig-btn.solid, .fig-btn[aria-pressed="true"] { background: var(--teal); color: var(--white); }
+.fig-btn.solid:hover, .fig-btn[aria-pressed="true"]:hover { background: var(--ink); }
+
+.fig-readout { display: flex; flex-wrap: wrap; gap: 10px 32px; margin: 16px 0 0; }
+.fig-readout dt { font-size: 12.5px; color: var(--muted); }
+.fig-readout dd { margin: 0; font-family: var(--mono); font-size: 14px; color: var(--ink); }
+.fig-readout dd.c-rust { color: var(--rust); }
+
+.fig-caption {
+  margin-top: 18px; padding-top: 12px; border-top: 1px solid var(--sage);
+  font-size: 14px; color: var(--body); max-width: 80ch;
+}
+.fig button:focus-visible, .fig input:focus-visible { outline: 2px solid var(--rust); outline-offset: 2px; }
 
 /* Contact */
 
@@ -227,7 +289,8 @@ a:hover { color: var(--rust); }
   .row, .project-head { grid-template-columns: minmax(0, 1fr); }
   .row .venue { grid-column: auto; }
   .display { padding: 14px 14px; }
-  .fig-panel figure { padding: 16px !important; }
+  .fig { padding: 16px; }
+  .fig-readout { gap: 8px 24px; }
 }
 
 /* Print */
