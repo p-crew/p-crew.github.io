@@ -65,7 +65,7 @@
 <div class="fig-actions"><button type="button" class="fig-btn solid" data-on="click:again">New path</button></div>
 </div>
 <p class="fig-status quiet" data-show="zeroNoise" role="status">At \(\sigma = 0\), Milstein reduces to Euler, so any drift away from the Runge–Kutta orbit is discretisation error.</p>
-<figcaption class="fig-caption">Independent multiplicative noise on each population, as in the dissertation. The noise terms commute, so Milstein needs no Lévy areas. Step \(h = 0.005\), \(\beta_1 = \beta_2 = 0.75\), \(\alpha_1 = 1\), \(\alpha_2 = 0.5\), from \((1, 1)\).</figcaption>
+<figcaption class="fig-caption">Independent multiplicative noise on each population. The noise terms commute, so Milstein needs no Lévy areas. Step \(h = 0.005\), \(\beta_1 = \beta_2 = 0.75\), \(\alpha_1 = 1\), \(\alpha_2 = 0.5\), from \((1, 1)\).</figcaption>
 </figure>
 `;
 
