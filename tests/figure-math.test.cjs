@@ -195,3 +195,70 @@ test('Lotka–Volterra identifies the deterministic solver discrepancy', () => {
   assert.ok(H(figure.sto.at(-1)) - H(figure.sto[0]) > 0.01);
   near(H(figure.det.at(-1)), H(figure.det[0]), 1e-9);
 });
+
+test('GBM plane tracks drag pointer capture, touch cancellation, and keyboard controls', () => {
+  const { figure, markup } = load('nonexist');
+  assert.match(markup, /pointerdown:pickStart; pointermove:pickMove/);
+  assert.match(markup, /touch-action: none/);
+  assert.match(markup, /keydown:pickKey/);
+  let captured = null, releases = 0, prevented = 0;
+  const svg = {
+    getBoundingClientRect: () => ({ left: 80, top: 100, width: 600, height: 360 }),
+    setPointerCapture(id) { captured = id; },
+    hasPointerCapture(id) { return captured === id; },
+    releasePointerCapture(id) { assert.equal(id, captured); captured = null; releases++; }
+  };
+  const event = (type, sig, mu, id = 7, overrides = {}) => ({
+    type,
+    currentTarget: svg,
+    pointerType: 'mouse',
+    button: 0,
+    pointerId: id,
+    clientX: 80 + 56 + 520 * sig / 0.6,
+    clientY: 100 + 320 - 296 * (mu + 0.1) / 0.4,
+    preventDefault() { prevented++; },
+    ...overrides
+  });
+
+  figure.renderVals().pickStart(event('pointerdown', 0.15, 0.08));
+  assert.equal(captured, 7);
+  assert.equal(figure.touched, true);
+  near(figure.state.sig, 0.15);
+  near(figure.state.mu, 0.08);
+
+  figure.renderVals().pickMove(event('pointermove', 0.42, 0.21));
+  near(figure.state.sig, 0.42);
+  near(figure.state.mu, 0.21);
+  figure.renderVals().pickMove(event('pointermove', 0.6, -0.1, 9));
+  near(figure.state.sig, 0.42); // A different pointer cannot hijack the drag.
+  figure.renderVals().pickEnd(event('pointerup', 0.5, 0.25));
+  near(figure.state.sig, 0.5);
+  near(figure.state.mu, 0.25);
+  assert.equal(captured, null);
+  figure.renderVals().pickMove(event('pointermove', 0.1, 0.1));
+  near(figure.state.sig, 0.5); // No updates after release.
+
+  figure.renderVals().pickStart(event('pointerdown', 0.2, -0.03, 8, { pointerType: 'touch' }));
+  figure.renderVals().pickMove(event('pointermove', 1, 1, 8, { pointerType: 'touch' }));
+  near(figure.state.sig, 0.6); // Clamp drags outside the plot.
+  near(figure.state.mu, 0.3);
+  figure.renderVals().pickEnd(event('pointercancel', 0.6, 0.3, 8, { pointerType: 'touch' }));
+  assert.equal(captured, null);
+  figure.renderVals().pickMove(event('pointermove', 0.2, -0.03, 8));
+  near(figure.state.sig, 0.6);
+  assert.equal(releases, 2);
+
+  figure.renderVals().pickStart(event('pointerdown', 0.1, -0.1, 10, { button: 2 }));
+  assert.equal(captured, null); // Ignore secondary mouse buttons.
+  figure.renderVals().pickKey({ key: 'ArrowLeft', shiftKey: false, preventDefault() { prevented++; } });
+  near(figure.state.sig, 0.59);
+  figure.renderVals().pickKey({ key: 'ArrowDown', shiftKey: true, preventDefault() { prevented++; } });
+  near(figure.state.mu, 0.275);
+  assert.ok(prevented >= 6);
+});
+
+test('Lotka–Volterra caption omits the dissertation aside', () => {
+  const { markup } = load('lv');
+  assert.doesNotMatch(markup, /as in the dissertation/);
+  assert.match(markup, /Independent multiplicative noise on each population\./);
+});

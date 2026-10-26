@@ -5,6 +5,8 @@
   // Typographic minus sign for negative numbers.
   function num(v, digits) { return v.toFixed(digits).replace(/^-(?=.*[1-9])/, '−').replace(/^-/, ''); }
 
+  var INTRO_HORIZON = 65;
+
   var markup = String.raw`
 <figure class="fig">
 <div class="fig-model">
@@ -13,8 +15,8 @@
 </div>
 <div class="fig-plots">
 <div>
-<p class="fig-label">Shaded where \(\chi &lt; 0\); click to move \((\sigma, \mu)\)</p>
-<svg viewBox="0 0 600 360" role="img" aria-label="Income volatility and drift. For positive volatility in the shaded region, the theorem excludes admissible feedback solutions for sufficiently large horizons. The zero-volatility axis is excluded." style="cursor: crosshair" data-on="click:pick">
+<p class="fig-label">Shaded where \(\chi &lt; 0\); click and drag to move \((\sigma, \mu)\)</p>
+<svg viewBox="0 0 600 360" role="group" tabindex="0" aria-label="Volatility and drift plot. Click and drag to select values, or use arrow keys to adjust them. The shaded region indicates chi below zero; the zero-volatility axis is excluded." style="cursor: crosshair; touch-action: none; user-select: none" data-on="pointerdown:pickStart; pointermove:pickMove; pointerup:pickEnd; pointercancel:pickEnd; lostpointercapture:pickEnd; keydown:pickKey">
 <defs><clipPath id="cpPlane"><rect x="56" y="24" width="520" height="296"></rect></clipPath></defs>
 <path fill="#9D5C3E" fill-opacity="0.13" clip-path="url(#cpPlane)" data-bind="d:regionPath"></path>
 <path d="M56 24V320H576" fill="none" stroke="#B8C1B6" stroke-width="1.4"></path>
@@ -80,20 +82,76 @@
     constructor(root) {
       super(root);
       this.state = { T: 1, mu: 0.05, sig: 0.1, g: 2, r: 0.02, d: 0.05 };
+      this.activePointer = null;
+      this.introRunning = false;
+      this.raf = null;
     }
     componentDidMount() {
       var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (reduce) { this.setState({ T: 65 }); return; }
+      if (reduce) { this.setState({ T: INTRO_HORIZON }); return; }
+      this.introRunning = true;
       var self = this, t0 = performance.now(), dur = 6000;
       var tick = function (now) {
-        if (self.touched) return;
+        if (!self.introRunning) return;
         var p = Math.min(1, (now - t0) / dur), e = p * p * (3 - 2 * p);
-        self.setState({ T: Math.round(2 * (1 + 64 * e)) / 2 });
+        self.setState({ T: Math.round(2 * (1 + (INTRO_HORIZON - 1) * e)) / 2 });
         if (p < 1) self.raf = requestAnimationFrame(tick);
+        else { self.introRunning = false; self.raf = null; }
       };
       this.raf = requestAnimationFrame(tick);
     }
-    componentWillUnmount() { if (this.raf) cancelAnimationFrame(this.raf); }
+    componentWillUnmount() { this.activePointer = null; this.stopIntro(true); }
+    stopIntro(preserveHorizon) {
+      var finish = this.introRunning && !preserveHorizon;
+      this.introRunning = false;
+      this.touched = true;
+      if (this.raf !== null) { cancelAnimationFrame(this.raf); this.raf = null; }
+      // Parameter exploration skips to the intro's endpoint, rather than
+      // trapping the bound at a short horizon with no crossings. An explicit
+      // horizon choice (or unmount) must keep the current value instead.
+      if (finish) this.setState({ T: INTRO_HORIZON });
+    }
+    pickAt(e) {
+      var rect = e.currentTarget.getBoundingClientRect();
+      if (!rect.width || !rect.height) return;
+      var vx = (e.clientX - rect.left) / rect.width * 600;
+      var vy = (e.clientY - rect.top) / rect.height * 360;
+      var s = Math.max(0, Math.min(0.6, (vx - 56) / 520 * 0.6));
+      var m = Math.max(-0.1, Math.min(0.3, (320 - vy) / 296 * 0.4 - 0.1));
+      var sig = Math.round(s * 100) / 100, mu = Math.round(m * 200) / 200;
+      if (sig !== this.state.sig || mu !== this.state.mu) this.setState({ sig: sig, mu: mu });
+    }
+    pickStart(e) {
+      if (this.activePointer !== null || (e.pointerType === 'mouse' && e.button !== 0)) return;
+      this.activePointer = e.pointerId;
+      e.currentTarget.setPointerCapture(e.pointerId);
+      this.stopIntro();
+      this.pickAt(e);
+      e.preventDefault();
+    }
+    pickMove(e) {
+      if (e.pointerId !== this.activePointer) return;
+      this.pickAt(e);
+      e.preventDefault();
+    }
+    pickEnd(e) {
+      if (e.pointerId !== this.activePointer) return;
+      if (e.type === 'pointerup') this.pickAt(e);
+      this.activePointer = null;
+      var svg = e.currentTarget;
+      if (svg.hasPointerCapture && svg.hasPointerCapture(e.pointerId)) svg.releasePointerCapture(e.pointerId);
+    }
+    pickKey(e) {
+      var ds = e.key === 'ArrowLeft' ? -1 : e.key === 'ArrowRight' ? 1 : 0;
+      var dm = e.key === 'ArrowDown' ? -1 : e.key === 'ArrowUp' ? 1 : 0;
+      if (!ds && !dm) return;
+      e.preventDefault();
+      this.stopIntro();
+      var step = e.shiftKey ? 5 : 1;
+      var sig = Math.max(0, Math.min(60, Math.round(this.state.sig * 100) + ds * step)) / 100;
+      var mu = Math.max(-20, Math.min(60, Math.round(this.state.mu * 200) + dm * step)) / 200;
+      if (sig !== this.state.sig || mu !== this.state.mu) this.setState({ sig: sig, mu: mu });
+    }
     estimate() {
       var st = this.state, g = st.g, rb = Math.abs(st.r);
       var chi = st.r - st.d - g * st.mu + 0.5 * g * (g + 1) * st.sig * st.sig;
@@ -158,8 +216,7 @@
         if (below) neg++;
         paths.push({ d: path, color: below ? '#9D5C3E' : '#244F46' });
       }
-      var stop = function () { self.touched = true; if (self.raf) cancelAnimationFrame(self.raf); };
-      var set = function (key) { return function (e) { stop(); var o = {}; o[key] = parseFloat(e.target.value); self.setState(o); }; };
+      var set = function (key) { return function (e) { self.stopIntro(key === 'T'); var o = {}; o[key] = parseFloat(e.target.value); self.setState(o); }; };
       return {
         regionPath: region, curvePath: curve,
         ptX: px(sig).toFixed(1), ptY: py(mu).toFixed(1), ptFill: sig === 0 ? '#657061' : (chi < 0 ? '#9D5C3E' : '#244F46'),
@@ -174,14 +231,10 @@
         negLabel: estimate.available ? neg + ' / ' + dB.length : '—',
         vLong: sig > 0 && chi < 0, vZero: sig === 0, vNa: sig > 0 && chi >= 0,
         setT: set('T'), setMu: set('mu'), setSig: set('sig'), setG: set('g'), setR: set('r'), setD: set('d'),
-        pick: function (e) {
-          stop();
-          var rect = e.currentTarget.getBoundingClientRect();
-          var vx = (e.clientX - rect.left) / rect.width * 600, vy = (e.clientY - rect.top) / rect.height * 360;
-          var s = Math.max(0, Math.min(0.6, (vx - 56) / 520 * 0.6));
-          var m = Math.max(-0.1, Math.min(0.3, (320 - vy) / 296 * 0.4 - 0.1));
-          self.setState({ sig: Math.round(s * 100) / 100, mu: Math.round(m * 200) / 200 });
-        }
+        pickStart: function (e) { self.pickStart(e); },
+        pickMove: function (e) { self.pickMove(e); },
+        pickEnd: function (e) { self.pickEnd(e); },
+        pickKey: function (e) { self.pickKey(e); }
       };
     }
   }
