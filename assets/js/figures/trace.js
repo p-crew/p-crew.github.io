@@ -3,34 +3,46 @@
   'use strict';
 
   var markup = String.raw`
-<figure style="margin: 0; font-family: 'IBM Plex Sans', system-ui, sans-serif; color: #203D36; background: #FFFFFF; border: 1px solid #D9DDD2; border-radius: 4px; padding: 24px; box-sizing: border-box; font-size: 15px; line-height: 1.55">
-<p style="margin: 0 0 8px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #515C55"><span style="display: inline-block; width: 14px; height: 2px; vertical-align: middle; background: #A3ACA0"></span> observed intensity   <span style="display: inline-block; width: 14px; height: 2px; vertical-align: middle; background: #244F46"></span> true state   <span style="display: inline-block; width: 14px; height: 2px; vertical-align: middle; background: #9D5C3E"></span> Viterbi decoding</p>
-<svg viewBox="0 0 880 320" role="img" aria-label="A noisy synthetic intensity trace over 600 frames, with the true hidden state and the decoded state drawn as step functions." style="display: block; width: 100%; height: auto">
-<line x1="56" x2="56" y1="16" y2="296" stroke="#B8C1B6"></line>
-<text x="48" y="15" font-family="IBM Plex Mono, monospace" font-size="10" fill="#657061" text-anchor="end" data-text="yMaxLabel"></text>
-<text x="48" y="306" font-family="IBM Plex Mono, monospace" font-size="10" fill="#657061" text-anchor="end" data-text="yMinLabel"></text>
-<line x1="56" x2="864" stroke="#EDF0E7" data-bind="y1:yH; y2:yH"></line>
-<line x1="56" x2="864" stroke="#EDF0E7" data-bind="y1:yQ; y2:yQ"></line>
-<line x1="56" x2="864" stroke="#EDF0E7" data-bind="y1:yP; y2:yP"></line>
-<line x1="56" x2="864" stroke="#B8C1B6" data-bind="y1:yZ; y2:yZ"></line>
-<text x="48" font-family="IBM Plex Mono, monospace" font-size="11" fill="#657061" text-anchor="end" data-bind="y:tH">H</text>
-<text x="48" font-family="IBM Plex Mono, monospace" font-size="11" fill="#657061" text-anchor="end" data-bind="y:tQ">Q</text>
-<text x="48" font-family="IBM Plex Mono, monospace" font-size="11" fill="#657061" text-anchor="end" data-bind="y:tP">PB</text>
-<text x="48" font-family="IBM Plex Mono, monospace" font-size="11" fill="#657061" text-anchor="end" data-bind="y:tZ">Z</text>
-<text x="864" y="314" font-family="IBM Plex Mono, monospace" font-size="11" fill="#657061" text-anchor="end">frame</text>
+<figure class="fig">
+<div class="fig-model">\(y_t \mid z_t = k \sim \mathcal{N}(\mu_k, s^2)\), hidden states \(z_t \in \{\mathrm{H}, \mathrm{Q}, \mathrm{PB}, \mathrm{Z}\}\)</div>
+<ul class="fig-legend">
+<li><span class="sw c-grey"></span>observed intensity</li>
+<li><span class="sw c-teal"></span>true state</li>
+<li><span class="sw dash c-rust"></span>Viterbi decoding</li>
+</ul>
+<svg viewBox="0 0 880 320" role="img" aria-label="A noisy synthetic intensity trace over 600 frames, with the true hidden state and the decoded state drawn as step functions.">
+<g stroke="#EDF0E7">
+<line x1="56" x2="864" data-bind="y1:yH; y2:yH"></line>
+<line x1="56" x2="864" data-bind="y1:yQ; y2:yQ"></line>
+<line x1="56" x2="864" data-bind="y1:yP; y2:yP"></line>
+<line x1="56" x2="864" data-bind="y1:yZ; y2:yZ"></line>
+</g>
+<path d="M56 16V296H864" fill="none" stroke="#B8C1B6"></path>
+<g font-family="IBM Plex Mono, monospace" font-size="14" fill="#657061" text-anchor="end">
+<text x="48" data-bind="y:tH">H</text>
+<text x="48" data-bind="y:tQ">Q</text>
+<text x="48" data-bind="y:tP">PB</text>
+<text x="48" data-bind="y:tZ">Z</text>
+</g>
+<g font-family="IBM Plex Mono, monospace" font-size="14" fill="#657061">
+<text x="56" y="314" text-anchor="middle">0</text>
+<text x="325.8" y="314" text-anchor="middle">200</text>
+<text x="595.6" y="314" text-anchor="middle">400</text>
+<text x="864" y="314" text-anchor="end">600 frames</text>
+</g>
 <path fill="none" stroke="#A3ACA0" stroke-width="1" data-bind="d:obs"></path>
 <path fill="none" stroke="#244F46" stroke-width="2.4" stroke-linejoin="round" data-bind="d:truth"></path>
 <path fill="none" stroke="#9D5C3E" stroke-width="1.6" stroke-dasharray="5 3" stroke-linejoin="round" data-bind="d:dec"></path>
 </svg>
-<div style="display: flex; flex-wrap: wrap; gap: 16px 32px; align-items: center; margin-top: 12px; padding-top: 16px; border-top: 1px solid #EDF0E7">
-<label style="flex: 1 1 240px; display: flex; flex-direction: column; gap: 2px; font-size: 13px; color: #515C55">
-<span>noise level \(s =\) <span style="font-family: 'IBM Plex Mono', monospace"><span data-text="sLabel"></span></span></span>
-<input type="range" min="0.04" max="0.4" step="0.01" style="accent-color: #244F46; width: 100%; height: 28px; margin: 0" data-bind="value:s" data-on="input:setS">
-</label>
-<span style="font-size: 13px; color: #515C55">frames decoded correctly: <span style="font-family: 'IBM Plex Mono', monospace"><span data-text="acc"></span></span></span>
-<button type="button" style="font: inherit; cursor: pointer; min-height: 44px; padding: 0 18px; border-radius: 999px; border: 1px solid #244F46; background: #244F46; color: #FFFFFF; font-size: 14px" data-on="click:again">New trace</button>
+<div class="fig-controls">
+<label class="fig-slider"><span>Noise level \(s\) <span class="v" data-text="sLabel"></span></span>
+<input type="range" min="0.04" max="0.4" step="0.01" aria-label="noise level s" data-bind="value:s" data-on="input:setS"></label>
+<div class="fig-actions"><button type="button" class="fig-btn solid" data-on="click:again">New trace</button></div>
 </div>
-<figcaption style="margin-top: 14px; font-size: 14px; color: #515C55">A synthetic trace from a four-state hidden Markov model with Gaussian emissions \(y_t \mid z_t = k \sim \mathcal{N}(\mu_k, s^2)\): the molecule switches between a high state H and a quenched state Q, one dye photobleaches (PB), then the other (Z). Example traces are selected to show switching and bleaching. Viterbi gives the most likely state sequence under the underlying HMM, using its true parameters. The intensity axis scales to show every observation, including negative intensities. Traces whose decoding did not follow the expected pattern were treated as artefacts in the project. Levels and rates are illustrative; no project data is shown.</figcaption>
+<dl class="fig-readout">
+<div><dt>Frames decoded correctly</dt><dd data-text="acc"></dd></div>
+</dl>
+<figcaption class="fig-caption">A synthetic trace: the molecule switches between a high state H and a quenched state Q until one dye photobleaches (PB), then the other (Z). Viterbi finds the most likely state sequence under the true model. Levels and rates are illustrative; no project data is shown.</figcaption>
 </figure>
 `;
 

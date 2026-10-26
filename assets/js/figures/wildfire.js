@@ -3,32 +3,37 @@
   'use strict';
 
   var markup = String.raw`
-<figure style="margin: 0; font-family: 'IBM Plex Sans', system-ui, sans-serif; color: #203D36; background: #FFFFFF; border: 1px solid #D9DDD2; border-radius: 4px; padding: 24px; box-sizing: border-box; font-size: 15px; line-height: 1.55">
-<p style="margin: 0; font-size: 14px; color: #515C55">\(\operatorname{logit} q_i = \operatorname{logit} p_i + \beta \sum_{j \sim i} x_j\), on a 4-neighbour grid</p>
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 20px; margin-top: 16px">
+<figure class="fig">
+<div class="fig-model">\(\operatorname{logit} q_i = \operatorname{logit} p_i + \beta \sum_{j \sim i} x_j\) on a 4-neighbour grid</div>
+<ul class="fig-legend">
+<li><span class="sw ramp"></span>probability 0 to 0.8</li>
+<li><span class="sw box c-ink"></span>burning</li>
+</ul>
+<div class="fig-plots" style="grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr))">
 <div>
-<p style="margin: 0 0 6px; font-size: 13px; color: #515C55">Random-forest probabilities \(p_i\)</p>
-<canvas width="240" height="240" role="img" aria-label="Heat map of the base fire probabilities." style="display: block; width: 100%; height: auto; aspect-ratio: 1 / 1" data-ref="setP"></canvas>
+<p class="fig-label">Random-forest probabilities \(p_i\)</p>
+<canvas width="240" height="240" role="img" aria-label="Heat map of the base fire probabilities." style="aspect-ratio: 1 / 1" data-ref="setP"></canvas>
 </div>
 <div>
-<p style="margin: 0 0 6px; font-size: 13px; color: #515C55">Current Gibbs sample \(\mathbf{x}\)</p>
-<canvas width="240" height="240" role="img" aria-label="The current sample from the autologistic model; burning cells are dark." style="display: block; width: 100%; height: auto; aspect-ratio: 1 / 1" data-ref="setX"></canvas>
+<p class="fig-label">Current Gibbs sample \(\mathbf{x}\)</p>
+<canvas width="240" height="240" role="img" aria-label="The current sample from the autologistic model; burning cells are dark." style="aspect-ratio: 1 / 1" data-ref="setX"></canvas>
 </div>
 <div>
-<p style="margin: 0 0 6px; font-size: 13px; color: #515C55">Corrected probabilities (Gibbs mean)</p>
-<canvas width="240" height="240" role="img" aria-label="Heat map of the running Gibbs mean, the spatially corrected probabilities." style="display: block; width: 100%; height: auto; aspect-ratio: 1 / 1" data-ref="setM"></canvas>
+<p class="fig-label">Corrected probabilities (Gibbs mean)</p>
+<canvas width="240" height="240" role="img" aria-label="Heat map of the running Gibbs mean, the spatially corrected probabilities." style="aspect-ratio: 1 / 1" data-ref="setM"></canvas>
 </div>
 </div>
-<div style="display: flex; flex-wrap: wrap; gap: 16px 32px; align-items: center; margin-top: 16px; padding-top: 16px; border-top: 1px solid #EDF0E7">
-<label style="flex: 1 1 240px; display: flex; flex-direction: column; gap: 2px; font-size: 13px; color: #515C55">
-<span>interaction \(\beta =\) <span style="font-family: 'IBM Plex Mono', monospace"><span data-text="betaLabel"></span></span></span>
-<input type="range" min="0" max="1.2" step="0.02" style="accent-color: #244F46; width: 100%; height: 28px; margin: 0" data-bind="value:beta" data-on="input:setBeta">
-</label>
-<span style="font-size: 13px; color: #515C55">mean of \(p_i\): <span style="font-family: 'IBM Plex Mono', monospace"><span data-text="meanP"></span></span><br>mean of corrected: <span style="font-family: 'IBM Plex Mono', monospace"><span data-text="meanQ"></span></span></span>
-<span style="font-size: 13px; color: #515C55">sweeps: <span style="font-family: 'IBM Plex Mono', monospace"><span data-text="sweeps"></span></span></span>
-<button type="button" style="font: inherit; cursor: pointer; min-height: 44px; padding: 0 18px; border-radius: 999px; border: 1px solid #244F46; background: #244F46; color: #FFFFFF; font-size: 14px" data-on="click:toggle"><span data-text="toggleLabel"></span></button>
+<div class="fig-controls">
+<label class="fig-slider"><span>Interaction \(\beta\) <span class="v" data-text="betaLabel"></span></span>
+<input type="range" min="0" max="1.2" step="0.02" aria-label="interaction beta" data-bind="value:beta" data-on="input:setBeta"></label>
+<div class="fig-actions"><button type="button" class="fig-btn solid" data-on="click:toggle"><span data-text="toggleLabel"></span></button></div>
 </div>
-<figcaption style="margin-top: 14px; font-size: 14px; color: #515C55">The random forest treats sites as independent. The autologistic model adds a neighbour interaction \(\beta\) to each site's conditional log-odds, and a systematic-scan Gibbs sampler, started from independent draws, estimates the corrected probabilities as the mean of the samples after burn-in (20 sweeps here). Synthetic probabilities on a 40 × 40 grid; in the project \(\beta\) was fitted by pseudo-likelihood and an approximate likelihood ratio.</figcaption>
+<dl class="fig-readout">
+<div><dt>Mean \(p_i\)</dt><dd data-text="meanP"></dd></div>
+<div><dt>Mean corrected</dt><dd data-text="meanQ"></dd></div>
+<div><dt>Sweeps</dt><dd data-text="sweeps"></dd></div>
+</dl>
+<figcaption class="fig-caption">The random forest treats sites as independent. The autologistic model adds a neighbour term to each site's log-odds; averaging Gibbs samples after 20 burn-in sweeps gives the corrected probabilities. Synthetic 40 × 40 grid; in the project \(\beta\) was fitted by pseudo-likelihood and an approximate likelihood ratio.</figcaption>
 </figure>
 `;
 

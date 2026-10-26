@@ -3,28 +3,28 @@
   'use strict';
 
   var markup = String.raw`
-<figure style="margin: 0; font-family: 'IBM Plex Sans', system-ui, sans-serif; color: #203D36; background: #FFFFFF; border: 1px solid #D9DDD2; border-radius: 4px; padding: 24px; box-sizing: border-box; font-size: 15px; line-height: 1.55">
-<div style="overflow-x: auto; font-size: 14px; color: #515C55">\[\mathrm{d}X_t = (\beta_1 - \alpha_1 Y_t)X_t\,\mathrm{d}t + \sigma X_t\,\mathrm{d}W^{(1)}_t, \qquad \mathrm{d}Y_t = (\alpha_2 X_t - \beta_2)Y_t\,\mathrm{d}t + \sigma Y_t\,\mathrm{d}W^{(2)}_t\]</div>
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 24px; margin-top: 8px">
-<div style="min-width: 0">
-<p style="margin: 0 0 6px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #515C55"><span style="display: inline-block; width: 14px; height: 2px; vertical-align: middle; background: #244F46"></span> prey \(X_t\)   <span style="display: inline-block; width: 14px; height: 2px; vertical-align: middle; background: #9D5C3E"></span> predator \(Y_t\)   <span style="display: inline-block; width: 14px; height: 0; vertical-align: middle; border-top: 1.5px dashed #A3ACA0"></span> deterministic</p>
-<svg viewBox="0 0 420 280" role="img" aria-label="Prey and predator populations against time, for the stochastic model and the deterministic model." style="display: block; width: 100%; height: auto">
+<figure class="fig">
+<div class="fig-model">
+<div>\(\mathrm{d}X_t = (\beta_1 - \alpha_1 Y_t)X_t\,\mathrm{d}t + \sigma X_t\,\mathrm{d}W^{(1)}_t\)</div>
+<div>\(\mathrm{d}Y_t = (\alpha_2 X_t - \beta_2)Y_t\,\mathrm{d}t + \sigma Y_t\,\mathrm{d}W^{(2)}_t\)</div>
+</div>
+<div class="fig-plots">
+<div>
+<ul class="fig-legend">
+<li><span class="sw c-teal"></span>prey \(X_t\)</li>
+<li><span class="sw c-rust"></span>predator \(Y_t\)</li>
+<li><span class="sw dash c-grey"></span>deterministic</li>
+</ul>
+<svg viewBox="0 0 420 280" role="img" aria-label="Prey and predator populations against time, for the stochastic model and the deterministic model.">
 <defs><clipPath id="lvTs"><rect x="44" y="12" width="364" height="228"></rect></clipPath></defs>
-<line x1="44" x2="408" y1="12" y2="12" stroke="#EDF0E7"></line>
-<line x1="44" x2="408" y1="69" y2="69" stroke="#EDF0E7"></line>
-<line x1="44" x2="408" y1="126" y2="126" stroke="#EDF0E7"></line>
-<line x1="44" x2="408" y1="183" y2="183" stroke="#EDF0E7"></line>
-<line x1="44" x2="408" y1="240" y2="240" stroke="#B8C1B6"></line>
-<line x1="44" x2="44" y1="12" y2="240" stroke="#B8C1B6"></line>
-<text x="36" y="16" font-family="IBM Plex Mono, monospace" font-size="11" fill="#657061" text-anchor="end">4</text>
-<text x="36" y="73" font-family="IBM Plex Mono, monospace" font-size="11" fill="#657061" text-anchor="end">3</text>
-<text x="36" y="130" font-family="IBM Plex Mono, monospace" font-size="11" fill="#657061" text-anchor="end">2</text>
-<text x="36" y="187" font-family="IBM Plex Mono, monospace" font-size="11" fill="#657061" text-anchor="end">1</text>
-<text x="36" y="244" font-family="IBM Plex Mono, monospace" font-size="11" fill="#657061" text-anchor="end">0</text>
-<text x="44" y="258" font-family="IBM Plex Mono, monospace" font-size="11" fill="#657061" text-anchor="middle">0</text>
-<text x="226" y="258" font-family="IBM Plex Mono, monospace" font-size="11" fill="#657061" text-anchor="middle">20</text>
-<text x="408" y="258" font-family="IBM Plex Mono, monospace" font-size="11" fill="#657061" text-anchor="middle">40</text>
-<text x="408" y="274" font-family="IBM Plex Mono, monospace" font-size="11" fill="#657061" text-anchor="end">t</text>
+<path d="M44 12V240H408" fill="none" stroke="#B8C1B6"></path>
+<g font-family="IBM Plex Mono, monospace" font-size="12" fill="#657061" text-anchor="end">
+<text x="36" y="244">0</text><text x="36" y="187">1</text><text x="36" y="130">2</text><text x="36" y="73">3</text><text x="36" y="16">4</text>
+</g>
+<g font-family="IBM Plex Mono, monospace" font-size="12" fill="#657061" text-anchor="middle">
+<text x="44" y="258">0</text><text x="135" y="258">10</text><text x="226" y="258">20</text><text x="317" y="258">30</text><text x="408" y="258">40</text>
+</g>
+<text x="408" y="276" font-family="Newsreader, serif" font-style="italic" font-size="15" fill="#657061" text-anchor="end">t</text>
 <g clip-path="url(#lvTs)" fill="none" stroke-linejoin="round">
 <path stroke="#A3ACA0" stroke-width="1.2" stroke-dasharray="4 3" data-bind="d:detX"></path>
 <path stroke="#A3ACA0" stroke-width="1.2" stroke-dasharray="4 3" data-bind="d:detY"></path>
@@ -33,41 +33,39 @@
 </g>
 </svg>
 </div>
-<div style="min-width: 0">
-<p style="margin: 0 0 6px; font-size: 13px; color: #515C55">Phase plane: the deterministic orbit (dashed) is closed; the stochastic path drifts between orbits</p>
-<svg viewBox="0 0 420 280" role="img" aria-label="Predator against prey: a closed deterministic orbit and a stochastic path that wanders between orbits." style="display: block; width: 100%; height: auto">
+<div>
+<ul class="fig-legend">
+<li><span class="sw c-ink"></span>stochastic path</li>
+<li><span class="sw dash c-grey"></span>deterministic orbit</li>
+</ul>
+<svg viewBox="0 0 420 280" role="img" aria-label="Predator against prey: a closed deterministic orbit and a stochastic path that wanders between orbits.">
 <defs><clipPath id="lvPh"><rect x="44" y="12" width="364" height="228"></rect></clipPath></defs>
-<line x1="44" x2="408" y1="12" y2="12" stroke="#EDF0E7"></line>
-<line x1="44" x2="408" y1="126" y2="126" stroke="#EDF0E7"></line>
-<line x1="44" x2="408" y1="240" y2="240" stroke="#B8C1B6"></line>
-<line x1="44" x2="44" y1="12" y2="240" stroke="#B8C1B6"></line>
-<text x="36" y="16" font-family="IBM Plex Mono, monospace" font-size="11" fill="#657061" text-anchor="end">2</text>
-<text x="36" y="130" font-family="IBM Plex Mono, monospace" font-size="11" fill="#657061" text-anchor="end">1</text>
-<text x="36" y="244" font-family="IBM Plex Mono, monospace" font-size="11" fill="#657061" text-anchor="end">0</text>
-<text x="44" y="258" font-family="IBM Plex Mono, monospace" font-size="11" fill="#657061" text-anchor="middle">0</text>
-<text x="135" y="258" font-family="IBM Plex Mono, monospace" font-size="11" fill="#657061" text-anchor="middle">1</text>
-<text x="226" y="258" font-family="IBM Plex Mono, monospace" font-size="11" fill="#657061" text-anchor="middle">2</text>
-<text x="317" y="258" font-family="IBM Plex Mono, monospace" font-size="11" fill="#657061" text-anchor="middle">3</text>
-<text x="408" y="258" font-family="IBM Plex Mono, monospace" font-size="11" fill="#657061" text-anchor="middle">4</text>
-<text x="408" y="274" font-family="IBM Plex Mono, monospace" font-size="11" fill="#657061" text-anchor="end">prey X</text>
-<text x="52" y="26" font-family="IBM Plex Mono, monospace" font-size="11" fill="#657061">predator Y</text>
-<g clip-path="url(#lvPh)" fill="none" stroke-linejoin="round">
-<path stroke="#9D5C3E" stroke-width="1.6" stroke-dasharray="5 3" data-bind="d:phDet"></path>
-<path stroke="#244F46" stroke-width="1.2" data-bind="d:ph"></path>
+<path d="M44 12V240H408" fill="none" stroke="#B8C1B6"></path>
+<g font-family="IBM Plex Mono, monospace" font-size="12" fill="#657061" text-anchor="end">
+<text x="36" y="244">0</text><text x="36" y="130">1</text><text x="36" y="16">2</text>
 </g>
-<circle r="4" fill="#203D36" data-bind="cx:headX; cy:headY"></circle>
+<g font-family="IBM Plex Mono, monospace" font-size="12" fill="#657061" text-anchor="middle">
+<text x="44" y="258">0</text><text x="135" y="258">1</text><text x="226" y="258">2</text><text x="317" y="258">3</text><text x="408" y="258">4</text>
+</g>
+<g font-family="IBM Plex Sans, sans-serif" font-size="12" fill="#657061">
+<text x="408" y="276" text-anchor="end">prey</text>
+<text x="52" y="24">predator</text>
+</g>
+<g clip-path="url(#lvPh)" fill="none" stroke-linejoin="round">
+<path stroke="#A3ACA0" stroke-width="1.4" stroke-dasharray="4 3" data-bind="d:phDet"></path>
+<path stroke="#203D36" stroke-width="1.2" data-bind="d:ph"></path>
+</g>
+<circle r="4" fill="#9D5C3E" data-bind="cx:headX; cy:headY"></circle>
 </svg>
 </div>
 </div>
-<div style="display: flex; flex-wrap: wrap; gap: 16px 32px; align-items: center; margin-top: 12px; padding-top: 16px; border-top: 1px solid #EDF0E7">
-<label style="flex: 1 1 240px; display: flex; flex-direction: column; gap: 2px; font-size: 13px; color: #515C55">
-<span>noise \(\sigma =\) <span style="font-family: 'IBM Plex Mono', monospace"><span data-text="sigLabel"></span></span></span>
-<input type="range" min="0" max="0.15" step="0.005" style="accent-color: #244F46; width: 100%; height: 28px; margin: 0" data-bind="value:sigma" data-on="input:setSigma">
-</label>
-<button type="button" style="font: inherit; cursor: pointer; min-height: 44px; padding: 0 18px; border-radius: 999px; border: 1px solid #244F46; background: #244F46; color: #FFFFFF; font-size: 14px" data-on="click:again">New path</button>
+<div class="fig-controls">
+<label class="fig-slider"><span>Noise \(\sigma\) <span class="v" data-text="sigLabel"></span></span>
+<input type="range" min="0" max="0.15" step="0.005" aria-label="noise sigma" data-bind="value:sigma" data-on="input:setSigma"></label>
+<div class="fig-actions"><button type="button" class="fig-btn solid" data-on="click:again">New path</button></div>
 </div>
-<p data-show="zeroNoise" role="status" style="margin: 10px 0 0; font-size: 13px; color: #515C55">At \(\sigma=0\), the Milstein update reduces to Euler. Its departure from the Runge–Kutta reference is discretisation error.</p>
-<figcaption style="margin-top: 14px; font-size: 14px; color: #515C55">A predator–prey model with independent multiplicative noise on each population, after the example in the dissertation. The diffusion vector fields commute, so Milstein needs no simulated Lévy areas: each component gets the correction \(\tfrac12\sigma^2 X(\Delta W^2-h)\). Here \(h=0.005\), \(\beta_1=0.75\), \(\alpha_1=1\), \(\alpha_2=0.5\), \(\beta_2=0.75\), started from \((1,1)\); the deterministic reference uses Runge–Kutta. The simulated path includes both stochastic effects and time-discretisation error; at zero noise, all discrepancy from the reference is numerical.</figcaption>
+<p class="fig-status quiet" data-show="zeroNoise" role="status">At \(\sigma = 0\), Milstein reduces to Euler, so any drift away from the Runge–Kutta orbit is discretisation error.</p>
+<figcaption class="fig-caption">Independent multiplicative noise on each population, as in the dissertation. The noise terms commute, so Milstein needs no Lévy areas. Step \(h = 0.005\), \(\beta_1 = \beta_2 = 0.75\), \(\alpha_1 = 1\), \(\alpha_2 = 0.5\), from \((1, 1)\).</figcaption>
 </figure>
 `;
 

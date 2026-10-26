@@ -2,73 +2,70 @@
 (function () {
   'use strict';
 
+  var SUP = { '-': '⁻', '0': '⁰', '1': '¹', '2': '²', '3': '³', '4': '⁴', '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹' };
+  function sup(n) { return String(n).replace(/./g, function (ch) { return SUP[ch]; }); }
+  // 0.0032 -> '3.2 × 10⁻³'
+  function sci(v) {
+    var p = Math.floor(Math.log10(v)), m = v / Math.pow(10, p);
+    if (m >= 9.95) { m /= 10; p += 1; }
+    return m.toFixed(1) + ' × 10' + sup(p);
+  }
+
   var markup = String.raw`
-<figure style="margin: 0; font-family: 'IBM Plex Sans', system-ui, sans-serif; color: #203D36; background: #FFFFFF; border: 1px solid #D9DDD2; border-radius: 4px; padding: 24px; box-sizing: border-box; font-size: 15px; line-height: 1.55">
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 20px">
+<figure class="fig">
+<ul class="fig-legend">
+<li><span class="sw c-teal"></span>regularised, \(\varepsilon > 0\)</li>
+<li><span class="sw dash c-grey"></span>singular, \(\varepsilon = 0\)</li>
+</ul>
+<div class="fig-plots">
 <div>
-<p style="margin: 0 0 4px; font-size: 14px">Feedback shape  \(\psi_\varepsilon(m) = (\varepsilon + m^+)^{-1/\gamma_1}\)</p>
-<svg viewBox="0 0 360 272" role="img" aria-label="The consumption feedback map on a log scale: the singular map blows up as m tends to zero, the regularised map stays bounded." style="display: block; width: 100%; height: auto">
+<p class="fig-label">Consumption feedback \(\psi_\varepsilon(m) = (\varepsilon + m^+)^{-1/\gamma_1}\)</p>
+<svg viewBox="0 0 360 272" role="img" aria-label="The consumption feedback map on a log scale: the singular map blows up as m tends to zero, the regularised map stays bounded.">
 <defs><clipPath id="cpPsi"><rect x="44" y="16" width="300" height="228"></rect></clipPath></defs>
-<line x1="44" x2="344" y1="16" y2="16" stroke="#EDF0E7"></line>
-<line x1="44" x2="344" y1="92" y2="92" stroke="#EDF0E7"></line>
-<line x1="44" x2="344" y1="168" y2="168" stroke="#EDF0E7"></line>
-<line x1="44" x2="344" y1="244" y2="244" stroke="#B8C1B6"></line>
-<line x1="44" x2="44" y1="16" y2="244" stroke="#9D5C3E" stroke-width="1.5"></line>
-<text x="36" y="20" font-family="IBM Plex Mono, monospace" font-size="11" fill="#657061" text-anchor="end">100</text>
-<text x="36" y="96" font-family="IBM Plex Mono, monospace" font-size="11" fill="#657061" text-anchor="end">10</text>
-<text x="36" y="172" font-family="IBM Plex Mono, monospace" font-size="11" fill="#657061" text-anchor="end">1</text>
-<text x="36" y="248" font-family="IBM Plex Mono, monospace" font-size="11" fill="#657061" text-anchor="end">0.1</text>
-<text x="44" y="262" font-family="IBM Plex Mono, monospace" font-size="11" fill="#657061" text-anchor="middle">0</text>
-<text x="194" y="262" font-family="IBM Plex Mono, monospace" font-size="11" fill="#657061" text-anchor="middle">1</text>
-<text x="344" y="262" font-family="IBM Plex Mono, monospace" font-size="11" fill="#657061" text-anchor="middle">2</text>
-<text x="300" y="236" font-family="Newsreader, serif" font-style="italic" font-size="15" fill="#657061">m</text>
+<path d="M44 16V244H344" fill="none" stroke="#B8C1B6"></path>
+<g font-family="IBM Plex Mono, monospace" font-size="12" fill="#657061" text-anchor="end">
+<text x="38" y="248">10⁻¹</text><text x="38" y="172">10⁰</text><text x="38" y="96">10¹</text><text x="38" y="20">10²</text>
+</g>
+<g font-family="IBM Plex Mono, monospace" font-size="12" fill="#657061" text-anchor="middle">
+<text x="44" y="262">0</text><text x="194" y="262">1</text><text x="344" y="262">2</text>
+</g>
+<text x="336" y="234" font-family="Newsreader, serif" font-style="italic" font-size="16" fill="#657061" text-anchor="end">m</text>
 <g clip-path="url(#cpPsi)" fill="none" stroke-linecap="round">
-<path stroke="#A3ACA0" stroke-width="1.4" stroke-dasharray="3 4" data-bind="d:psiSing"></path>
+<path stroke="#A3ACA0" stroke-width="1.5" stroke-dasharray="4 4" data-bind="d:psiSing"></path>
 <path stroke="#244F46" stroke-width="2" data-bind="d:psiReg"></path>
 </g>
 </svg>
 </div>
 <div>
-<p style="margin: 0 0 4px; font-size: 14px">Terminal coupling  \(g_\varepsilon(w) = \lambda(\varepsilon + w^+)^{-\gamma_2}\)</p>
-<svg viewBox="0 0 360 272" role="img" aria-label="The terminal marginal utility on a log scale: the singular map blows up as terminal wealth tends to zero, the regularised map stays bounded." style="display: block; width: 100%; height: auto">
+<p class="fig-label">Terminal coupling \(g_\varepsilon(w) = \lambda(\varepsilon + w^+)^{-\gamma_2}\)</p>
+<svg viewBox="0 0 360 272" role="img" aria-label="The terminal marginal utility on a log scale: the singular map blows up as terminal wealth tends to zero, the regularised map stays bounded.">
 <defs><clipPath id="cpG"><rect x="44" y="16" width="300" height="228"></rect></clipPath></defs>
-<line x1="44" x2="344" y1="16" y2="16" stroke="#EDF0E7"></line>
-<line x1="44" x2="344" y1="92" y2="92" stroke="#EDF0E7"></line>
-<line x1="44" x2="344" y1="168" y2="168" stroke="#EDF0E7"></line>
-<line x1="44" x2="344" y1="244" y2="244" stroke="#B8C1B6"></line>
-<line x1="44" x2="44" y1="16" y2="244" stroke="#9D5C3E" stroke-width="1.5"></line>
-<text x="36" y="20" font-family="IBM Plex Mono, monospace" font-size="11" fill="#657061" text-anchor="end">100</text>
-<text x="36" y="96" font-family="IBM Plex Mono, monospace" font-size="11" fill="#657061" text-anchor="end">10</text>
-<text x="36" y="172" font-family="IBM Plex Mono, monospace" font-size="11" fill="#657061" text-anchor="end">1</text>
-<text x="36" y="248" font-family="IBM Plex Mono, monospace" font-size="11" fill="#657061" text-anchor="end">0.1</text>
-<text x="44" y="262" font-family="IBM Plex Mono, monospace" font-size="11" fill="#657061" text-anchor="middle">0</text>
-<text x="194" y="262" font-family="IBM Plex Mono, monospace" font-size="11" fill="#657061" text-anchor="middle">1</text>
-<text x="344" y="262" font-family="IBM Plex Mono, monospace" font-size="11" fill="#657061" text-anchor="middle">2</text>
-<text x="296" y="236" font-family="Newsreader, serif" font-style="italic" font-size="15" fill="#657061">w<tspan font-size="11" dy="3">T</tspan></text>
+<path d="M44 16V244H344" fill="none" stroke="#B8C1B6"></path>
+<g font-family="IBM Plex Mono, monospace" font-size="12" fill="#657061" text-anchor="end">
+<text x="38" y="248">10⁻¹</text><text x="38" y="172">10⁰</text><text x="38" y="96">10¹</text><text x="38" y="20">10²</text>
+</g>
+<g font-family="IBM Plex Mono, monospace" font-size="12" fill="#657061" text-anchor="middle">
+<text x="44" y="262">0</text><text x="194" y="262">1</text><text x="344" y="262">2</text>
+</g>
+<text x="336" y="234" font-family="Newsreader, serif" font-style="italic" font-size="16" fill="#657061" text-anchor="end">w</text>
 <g clip-path="url(#cpG)" fill="none" stroke-linecap="round">
-<path stroke="#A3ACA0" stroke-width="1.4" stroke-dasharray="3 4" data-bind="d:gSing"></path>
+<path stroke="#A3ACA0" stroke-width="1.5" stroke-dasharray="4 4" data-bind="d:gSing"></path>
 <path stroke="#244F46" stroke-width="2" data-bind="d:gReg"></path>
 </g>
 </svg>
 </div>
 </div>
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr)); gap: 12px 24px; margin-top: 16px; padding-top: 16px; border-top: 1px solid #EDF0E7">
-<label style="display: flex; flex-direction: column; gap: 2px; font-size: 14px; color: #515C55">
-<span>\(\varepsilon =\) <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px"><span data-text="epsLabel"></span></span></span>
-<input type="range" min="-3" max="0" step="0.01" aria-label="log10 epsilon" style="accent-color: #244F46; width: 100%; height: 28px; margin: 0" data-bind="value:logEps" data-on="input:setEps">
-</label>
-<label style="display: flex; flex-direction: column; gap: 2px; font-size: 14px; color: #515C55">
-<span>\(\gamma_1 =\) <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px"><span data-text="g1Label"></span></span></span>
-<input type="range" min="0.3" max="3" step="0.05" style="accent-color: #244F46; width: 100%; height: 28px; margin: 0" data-bind="value:g1" data-on="input:setG1">
-</label>
-<label style="display: flex; flex-direction: column; gap: 2px; font-size: 14px; color: #515C55">
-<span>\(\gamma_2 =\) <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px"><span data-text="g2Label"></span></span></span>
-<input type="range" min="0.3" max="3" step="0.05" style="accent-color: #244F46; width: 100%; height: 28px; margin: 0" data-bind="value:g2" data-on="input:setG2">
-</label>
+<div class="fig-controls">
+<label class="fig-slider"><span>\(\varepsilon\) <span class="v" data-text="epsLabel"></span></span>
+<input type="range" min="-3" max="0" step="0.01" aria-label="epsilon, log scale" data-bind="value:logEps" data-on="input:setEps"></label>
+<label class="fig-slider"><span>\(\gamma_1\) <span class="v" data-text="g1Label"></span></span>
+<input type="range" min="0.3" max="3" step="0.05" aria-label="gamma 1" data-bind="value:g1" data-on="input:setG1"></label>
+<label class="fig-slider"><span>\(\gamma_2\) <span class="v" data-text="g2Label"></span></span>
+<input type="range" min="0.3" max="3" step="0.05" aria-label="gamma 2" data-bind="value:g2" data-on="input:setG2"></label>
 </div>
-<p data-show="ok" style="margin: 12px 0 0; font-size: 14px; color: #244F46">\(\gamma_2 \le \gamma_1\): satisfies the risk-aversion condition for short-time well-posedness of the singular system, under the theorem's other assumptions.</p>
-<p data-show="notOk" style="margin: 12px 0 0; font-size: 14px; color: #9D5C3E">\(\gamma_2 > \gamma_1\): outside the short-time well-posedness result.</p>
-<figcaption style="margin-top: 12px; font-size: 14px; color: #515C55">The dashed curves are the singular CRRA couplings. The solid curves use \(x^+ = \max(x,0)\): for fixed \(\varepsilon > 0\), the extensions are monotone and globally Lipschitz, as required by the regularised continuation argument. Only non-negative arguments are plotted, with \(\lambda = 1\) and deterministic prefactors normalised to one. Passing to \(\varepsilon \downarrow 0\) requires further positivity, compactness and integrability estimates.</figcaption>
+<p class="fig-status" data-show="ok">\(\gamma_2 \le \gamma_1\): covered by the short-time well-posedness result.</p>
+<p class="fig-status warn" data-show="notOk">\(\gamma_2 > \gamma_1\): outside the short-time well-posedness result.</p>
+<figcaption class="fig-caption">For each \(\varepsilon > 0\) the regularised couplings, with \(x^+ = \max(x, 0)\), are monotone and globally Lipschitz. Log scale; \(\lambda = 1\).</figcaption>
 </figure>
 `;
 
@@ -111,7 +108,7 @@
       return {
         psiSing: this.curve(psi, 0), psiReg: this.curve(psi, eps), gSing: this.curve(g, 0), gReg: this.curve(g, eps),
         logEps: st.logEps, g1: g1, g2: g2, ok: ok, notOk: !ok,
-        epsLabel: eps < 0.01 ? eps.toExponential(1) : eps.toFixed(3), g1Label: g1.toFixed(2), g2Label: g2.toFixed(2),
+        epsLabel: eps < 0.01 ? sci(eps) : eps.toFixed(3), g1Label: g1.toFixed(2), g2Label: g2.toFixed(2),
         setEps: set('logEps'), setG1: set('g1'), setG2: set('g2')
       };
     }

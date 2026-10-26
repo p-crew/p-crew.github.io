@@ -3,48 +3,57 @@
   'use strict';
 
   var markup = String.raw`
-<figure style="margin: 0; font-family: 'IBM Plex Sans', system-ui, sans-serif; color: #203D36; background: #FFFFFF; border: 1px solid #D9DDD2; border-radius: 4px; padding: 24px; box-sizing: border-box; font-size: 15px; line-height: 1.55">
-<div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center" role="group" aria-label="Scan path">
-<button type="button" data-bind="aria-pressed:pressRaster; style:styleRaster" data-on="click:pickRaster">Snake raster</button>
-<button type="button" data-bind="aria-pressed:pressSpiral; style:styleSpiral" data-on="click:pickSpiral">Spiral</button>
-<button type="button" data-bind="aria-pressed:pressLiss; style:styleLiss" data-on="click:pickLiss">Lissajous</button>
-<button type="button" style="font: inherit; cursor: pointer; min-height: 44px; padding: 0 18px; border-radius: 999px; border: 1px solid #D9DDD2; background: #FFFFFF; color: #203D36; font-size: 14px" data-on="click:replay">Replay</button>
+<figure class="fig">
+<div class="fig-actions" role="group" aria-label="Scan path">
+<button type="button" class="fig-btn" data-bind="aria-pressed:pressRaster" data-on="click:pickRaster">Snake raster</button>
+<button type="button" class="fig-btn" data-bind="aria-pressed:pressSpiral" data-on="click:pickSpiral">Spiral</button>
+<button type="button" class="fig-btn" data-bind="aria-pressed:pressLiss" data-on="click:pickLiss">Lissajous</button>
 </div>
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 24px; margin-top: 16px; align-items: start">
+<div class="fig-plots" style="margin-top: 18px">
 <div>
-<p style="margin: 0 0 6px; font-size: 13px; color: #515C55">Sample: 30 features, found ones in rust</p>
-<canvas width="600" height="600" role="img" aria-label="The unit square with circular features; the scan path is drawn progressively and features it has passed over are coloured." style="display: block; width: 100%; max-width: 420px; height: auto; aspect-ratio: 1 / 1; background: #F6F5EF" data-ref="setCanvas"></canvas>
-<p style="margin: 8px 0 0; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #515C55">distance <span data-text="distLabel"></span> · found <span data-text="foundLabel"></span> / 30<span data-text="completionLabel"></span></p>
+<ul class="fig-legend">
+<li><span class="sw box c-rust"></span>found</li>
+<li><span class="sw box" style="color: #D9DDD2"></span>not yet found</li>
+<li><span class="sw c-teal"></span>scan path</li>
+</ul>
+<canvas width="600" height="600" role="img" aria-label="The unit square with circular features; the scan path is drawn progressively and features it has passed over are coloured." style="max-width: 440px; aspect-ratio: 1 / 1; background: #F6F5EF" data-ref="setCanvas"></canvas>
 </div>
-<div style="min-width: 0">
-<p style="margin: 0 0 6px; font-size: 13px; color: #515C55">Probability a feature has been found, against distance budget</p>
-<svg viewBox="0 0 440 300" role="img" aria-label="Fraction of features found against distance budget. A curve stays flat once its path has ended." style="display: block; width: 100%; height: auto">
-<line x1="44" x2="424" y1="20" y2="20" stroke="#EDF0E7"></line>
+<div>
+<p class="fig-label">Probability a feature is found within a given distance</p>
+<ul class="fig-legend">
+<li data-bind="class:lcRaster"><span class="sw"></span>raster</li>
+<li data-bind="class:lcSpiral"><span class="sw dash"></span>spiral</li>
+<li data-bind="class:lcLiss"><span class="sw dot"></span>Lissajous</li>
+</ul>
+<svg viewBox="0 0 440 300" role="img" aria-label="Fraction of features found against distance travelled, for the three paths. A curve stays flat once its path has ended.">
 <line x1="44" x2="424" y1="130" y2="130" stroke="#EDF0E7"></line>
-<line x1="44" x2="424" y1="240" y2="240" stroke="#B8C1B6"></line>
-<line x1="44" x2="44" y1="20" y2="240" stroke="#B8C1B6"></line>
-<text x="36" y="24" font-family="IBM Plex Mono, monospace" font-size="11" fill="#657061" text-anchor="end">1</text>
-<text x="36" y="134" font-family="IBM Plex Mono, monospace" font-size="11" fill="#657061" text-anchor="end">0.5</text>
-<text x="36" y="244" font-family="IBM Plex Mono, monospace" font-size="11" fill="#657061" text-anchor="end">0</text>
-<text x="44" y="258" font-family="IBM Plex Mono, monospace" font-size="11" fill="#657061" text-anchor="middle">0</text>
-<text x="234" y="258" font-family="IBM Plex Mono, monospace" font-size="11" fill="#657061" text-anchor="middle">5</text>
-<text x="424" y="258" font-family="IBM Plex Mono, monospace" font-size="11" fill="#657061" text-anchor="middle">10</text>
-<text x="424" y="276" font-family="IBM Plex Mono, monospace" font-size="11" fill="#657061" text-anchor="end">distance budget</text>
-<line y1="20" y2="240" stroke="#D9DDD2" stroke-dasharray="3 3" data-bind="x1:markX; x2:markX"></line>
-<path fill="none" data-bind="d:curveRaster; stroke:colRaster; stroke-width:wRaster"></path>
-<path fill="none" data-bind="d:curveSpiral; stroke:colSpiral; stroke-width:wSpiral"></path>
-<path fill="none" data-bind="d:curveLiss; stroke:colLiss; stroke-width:wLiss"></path>
-<text font-family="IBM Plex Mono, monospace" font-size="10" fill="#515C55" text-anchor="end" data-bind="x:lxRaster; y:lyRaster">raster</text>
-<text font-family="IBM Plex Mono, monospace" font-size="10" fill="#515C55" text-anchor="end" data-bind="x:lxSpiral; y:lySpiral">spiral</text>
-<text font-family="IBM Plex Mono, monospace" font-size="10" fill="#515C55" text-anchor="end" data-bind="x:lxLiss; y:lyLiss">Lissajous</text>
+<path d="M44 20V240H424" fill="none" stroke="#B8C1B6"></path>
+<line y1="20" y2="240" stroke="#9D5C3E" stroke-opacity="0.4" stroke-dasharray="3 3" data-bind="x1:markX; x2:markX"></line>
+<g font-family="IBM Plex Mono, monospace" font-size="15" fill="#657061" text-anchor="end">
+<text x="36" y="244">0</text><text x="36" y="134">0.5</text><text x="36" y="24">1</text>
+</g>
+<g font-family="IBM Plex Mono, monospace" font-size="15" fill="#657061" text-anchor="middle">
+<text x="44" y="260">0</text><text x="234" y="260">5</text><text x="424" y="260">10</text>
+</g>
+<text x="234" y="284" font-family="IBM Plex Sans, sans-serif" font-size="15" fill="#657061" text-anchor="middle">distance travelled</text>
+<g fill="none" stroke-linecap="round">
+<path data-bind="d:curveRaster; stroke:colRaster; stroke-width:wRaster"></path>
+<path stroke-dasharray="7 5" data-bind="d:curveSpiral; stroke:colSpiral; stroke-width:wSpiral"></path>
+<path stroke-dasharray="0.5 5" data-bind="d:curveLiss; stroke:colLiss; stroke-width:wLiss"></path>
+</g>
 </svg>
-<label style="display: flex; flex-direction: column; gap: 2px; margin-top: 12px; font-size: 13px; color: #515C55">
-<span>feature radius \(\rho =\) <span style="font-family: 'IBM Plex Mono', monospace"><span data-text="rhoLabel"></span></span></span>
-<input type="range" min="0.01" max="0.08" step="0.005" style="accent-color: #244F46; width: 100%; height: 28px; margin: 0" data-bind="value:rho" data-on="input:setRho">
-</label>
+<div class="fig-controls" style="grid-template-columns: minmax(0, 1fr)">
+<label class="fig-slider"><span>Feature radius \(\rho\) <span class="v" data-text="rhoLabel"></span></span>
+<input type="range" min="0.01" max="0.08" step="0.005" aria-label="feature radius rho" data-bind="value:rho" data-on="input:setRho"></label>
+<div class="fig-actions"><button type="button" class="fig-btn" data-on="click:replay">Replay</button></div>
+</div>
+<dl class="fig-readout">
+<div><dt>Distance</dt><dd><span data-text="distLabel"></span><span data-text="completionLabel"></span></dd></div>
+<div><dt>Found</dt><dd><span data-text="foundLabel"></span> / 30</dd></div>
+</dl>
 </div>
 </div>
-<figcaption style="margin-top: 14px; font-size: 14px; color: #515C55">Features are discs of radius \(\rho\) with centres uniform on the unit square; the beam has radius 0.01. Contacts are checked at distance increments of 0.004. All three paths move at the same speed until their endpoint or a distance budget of 10; the spiral ends at about 7.88 and its discovery probability then stays constant. The raster and spiral use line spacing 0.1. The curves are Monte Carlo estimates over 600 features. This illustrates the project's trade-off using synthetic paths: the spiral covers the centre quickly but leaves the corners, the raster extends coverage across the square, and the Lissajous path revisits regions it has already scanned.</figcaption>
+<figcaption class="fig-caption">Features are discs of radius \(\rho\) placed uniformly on the unit square; the beam has radius 0.01. All three paths move at the same speed, up to a distance of 10. The spiral finds central features first but ends at 7.88 without reaching the corners; the Lissajous path rescans ground it has covered. Curves are Monte Carlo estimates over 600 features.</figcaption>
 </figure>
 `;
 
@@ -173,14 +182,11 @@
     renderVals() {
       var self = this, st = this.state, hits = this.showHits[st.path], found = 0, end = this.pathLength(st.path), distance = Math.min(st.prog, end);
       for (var k = 0; k < hits.length; k++) if (hits[k] <= distance) found++;
-      var btn = function (on) {
-        return 'font: inherit; cursor: pointer; min-height: 44px; padding: 0 18px; border-radius: 999px; font-size: 14px; border: 1px solid #244F46; background: ' + (on ? '#244F46' : '#FFFFFF') + '; color: ' + (on ? '#FFFFFF' : '#244F46');
-      };
       var pick = function (k) { return function () { self.setState({ path: k }, function () { self.play(); }); }; };
       var out = {
         setCanvas: this.setCanvas, rho: st.rho, rhoLabel: st.rho.toFixed(3),
         distLabel: distance.toFixed(2), foundLabel: String(found), markX: (44 + 38 * distance).toFixed(1),
-        completionLabel: distance >= end && end < this.Lmax ? ' · path complete' : '',
+        completionLabel: distance >= end && end < this.Lmax ? ' (path complete)' : '',
         pickRaster: pick('raster'), pickSpiral: pick('spiral'), pickLiss: pick('liss'),
         replay: function () { self.play(); },
         setRho: function (e) {
@@ -192,18 +198,11 @@
       [['raster', 'Raster'], ['spiral', 'Spiral'], ['liss', 'Liss']].forEach(function (p, idx) {
         var on = st.path === p[0], end = self.curves[p[0]].end;
         out['press' + p[1]] = on ? 'true' : 'false';
-        out['style' + p[1]] = btn(on);
         out['curve' + p[1]] = self.curves[p[0]].d;
-        out['col' + p[1]] = on ? '#9D5C3E' : '#A3ACA0';
-        out['w' + p[1]] = on ? 2.4 : 1.4;
-        out['lx' + p[1]] = 420;
+        out['col' + p[1]] = on ? '#9D5C3E' : '#7F8A7D';
+        out['w' + p[1]] = on ? 2.6 : 1.6;
+        out['lc' + p[1]] = on ? 'c-rust' : null;
       });
-      // Stack the end labels above their curves without letting them overlap.
-      var labels = [['Raster', 'raster'], ['Spiral', 'spiral'], ['Liss', 'liss']].map(function (p) {
-        return { key: p[0], y: 240 - 220 * self.curves[p[1]].end - 6 };
-      }).sort(function (a, b) { return a.y - b.y; });
-      for (var i = 1; i < labels.length; i++) labels[i].y = Math.max(labels[i].y, labels[i - 1].y + 12);
-      labels.forEach(function (l) { out['ly' + l.key] = l.y.toFixed(1); });
       return out;
     }
   }
