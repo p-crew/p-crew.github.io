@@ -15,6 +15,7 @@ Plain HTML, CSS and JavaScript: no framework, no build step.
 | `assets/vendor/katex/` | KaTeX 0.16.11 (MIT licence), served locally: CSS, scripts and `woff2` fonts. |
 | `assets/peter-crew-cv.pdf` | CV linked from the page. |
 | `assets/favicon.svg`, `assets/social-card.png` | Browser icon and link-preview image. |
+| `assets/peter-crew-outdoors.webp` | Optimised homepage portrait (800 × 1000). |
 | `scripts/serve.mjs` | Local preview server only; not used by GitHub Pages. |
 
 The only external request is the Google Fonts stylesheet (Newsreader, IBM Plex Sans, IBM Plex Mono). If it is unavailable, the page falls back to system fonts.
