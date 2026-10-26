@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Peter Crew — Mathematics</title>
+  <meta name="description" content="Peter Crew is a PhD student in Statistical Applied Mathematics at the University of Bath (SAMBa), working on stochastic optimal control and forward–backward SDEs with singular coefficients.">
+  <meta name="theme-color" content="#f6f5ef">
+  <link rel="canonical" href="https://p-crew.github.io/">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Peter Crew — Mathematics">
+  <meta property="og:description" content="PhD student at the University of Bath working on stochastic optimal control with singular behaviour. Research, talks, projects and interactive figures.">
+  <meta property="og:url" content="https://p-crew.github.io/">
+  <meta property="og:image" content="https://p-crew.github.io/assets/social-card.png">
+  <meta property="og:image:alt" content="Peter Crew — Mathematics, University of Bath">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap">
+  <link rel="stylesheet" href="assets/vendor/katex/katex.min.css">
+  <link rel="stylesheet" href="styles.css">
+
+  <script defer src="assets/vendor/katex/katex.min.js"></script>
+  <script defer src="assets/vendor/katex/contrib/auto-render.min.js"></script>
+  <script defer src="assets/js/figure-runtime.js"></script>
+  <script defer src="script.js"></script>
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Peter Crew",
+      "url": "https://p-crew.github.io/",
+      "jobTitle": "PhD student in Statistical Applied Mathematics",
+      "affiliation": { "@type": "CollegeOrUniversity", "name": "University of Bath" },
+      "alumniOf": { "@type": "CollegeOrUniversity", "name": "University of Warwick" },
+      "email": "mailto:pnc28@bath.ac.uk",
+      "knowsAbout": ["Stochastic optimal control", "Forward–backward stochastic differential equations", "Rough paths"],
+      "sameAs": [
+        "https://samba.ac.uk/student/peter-crew/",
+        "https://researchportal.bath.ac.uk/en/persons/peter-crew/"
+      ]
+    }
+  </script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="wordmark" href="#top">Peter Crew</a>
+    <nav class="nav" aria-label="Main">
+      <a href="#research">Research</a>
+      <a href="#talks">Talks</a>
+      <a href="#projects">Projects</a>
+      <a href="#experience">Experience</a>
+      <a href="#contact">Contact</a>
+      <a class="nav-cv" href="assets/peter-crew-cv.pdf">CV<span class="sr-only"> (PDF)</span></a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+<section id="top" class="wrap hero">
+  <div class="hero-main">
+    <p class="eyebrow">PhD student · University of Bath</p>
+    <h1>Peter Crew</h1>
+    <p class="lead">I work on stochastic optimal control problems whose optimality conditions lead to forward–backward SDEs with singular coefficients.</p>
+    <p class="note">Before the PhD I worked on rough differential equations and numerical methods for SDEs. Several of the projects below have small interactive figures; open them with the buttons under each one.</p>
+    <div class="actions">
+      <a class="btn btn-solid" href="#research">Research</a>
+      <a class="btn btn-line" href="assets/peter-crew-cv.pdf">CV (PDF)</a>
+    </div>
+  </div>
+  <dl class="facts">
+    <dt>Position</dt>
+    <dd>PhD student, Statistical Applied Mathematics<br>University of Bath, SAMBa CDT</dd>
+    <dt>Currently</dt>
+    <dd>Research intern, SURE-AI, Oslo</dd>
+    <dt>Research</dt>
+    <dd>Stochastic optimal control, forward–backward SDEs, rough paths</dd>
+    <dt>Supervisors</dt>
+    <dd><a href="https://researchportal.bath.ac.uk/en/persons/avi-mayorcas/">Dr Avi Mayorcas</a><br><a href="https://researchportal.bath.ac.uk/en/persons/james-foster/">Dr James Foster</a></dd>
+    <dt>Contact</dt>
+    <dd><a href="mailto:pnc28@bath.ac.uk">pnc28@bath.ac.uk</a></dd>
+  </dl>
+</section>
+
+<div class="wrap">
+
+<section id="research" class="sec" aria-labelledby="research-h">
+  <h2 id="research-h">Research</h2>
+  <div class="sec-body">
+    <p class="date" style="margin: 0">PhD, 2024 –</p>
+    <h3 class="research-title">Stochastic optimal control with singular behaviour</h3>
+    <div class="prose">
+      <p style="margin-top: 20px">Passing from a control problem to its adjoint formulation can produce singular coefficients even when the original problem is well behaved. I study this through an optimal consumption problem with stochastic income,</p>
+    </div>
+    <div class="display">\[\max_{c}\ \mathbb{E}\left[\int_0^T e^{\delta(T-s)}u_1(c_s)\,\mathrm{d}s + \lambda\,u_2(w_T)\right], \qquad \mathrm{d}w_s = (r_s w_s + \eta_s - c_s)\,\mathrm{d}s.\]</div>
+    <div class="prose">
+      <p style="margin-top: 0">For CRRA utilities the maximum principle gives a coupled FBSDE whose feedback \(c_s \propto P_s^{-1/\gamma_1}\) and terminal condition \(P_T = \lambda w_T^{-\gamma_2}\) are both singular at the boundary, so standard Lipschitz theory does not apply.</p>
+      <p class="muted">Results so far: existence and uniqueness of an optimal consumption process; small-ball estimates for terminal wealth; a verification theorem for the adjoint FBSDE; local well-posedness for short horizons when \(\gamma_2 \le \gamma_1\); and non-existence for long horizons in some regimes with geometric Brownian income. Current work: global well-posedness, DeepBSDE-type numerics, and extensions with investment.</p>
+      <p class="muted small">Supervised by <a href="https://researchportal.bath.ac.uk/en/persons/avi-mayorcas/">Dr Avi Mayorcas</a> and <a href="https://researchportal.bath.ac.uk/en/persons/james-foster/">Dr James Foster</a> · <a href="https://samba.ac.uk/student/peter-crew/">SAMBa project page</a></p>
+    </div>
+    <div class="toggles">
+      <button class="tog" type="button" aria-expanded="false" aria-controls="fig-couplings" data-figure="couplings" hidden><span class="ic" aria-hidden="true"></span>Regularised couplings</button>
+      <button class="tog" type="button" aria-expanded="false" aria-controls="fig-nonexist" data-figure="nonexist" hidden><span class="ic" aria-hidden="true"></span>Non-existence with GBM income</button>
+    </div>
+    <div class="fig-panel" id="fig-couplings" hidden></div>
+    <div class="fig-panel" id="fig-nonexist" hidden></div>
+  </div>
+</section>
+
+<section id="talks" class="sec" aria-labelledby="talks-h">
+  <h2 id="talks-h">Talks and posters</h2>
+  <div class="sec-body">
+    <ul class="rows">
+      <li class="row">
+        <span class="date">Jun 2026</span>
+        <span><span class="what">Optimal consumption under singular utilities</span><span class="kind">Poster</span></span>
+        <span class="venue">3rd Young Summer School on Stochastic Analysis</span>
+      </li>
+      <li class="row">
+        <span class="date">Mar 2026</span>
+        <span><span class="what">Ordinals, cardinals, choice, and other things we pretend not to use</span><span class="kind">Talk</span></span>
+        <span class="venue">PSS, University of Bath</span>
+      </li>
+      <li class="row">
+        <span class="date">Oct 2025</span>
+        <span><span class="what">Stochastic optimal control with singularities: theory, numerics, and applications</span><span class="kind">Talk</span></span>
+        <span class="venue">SAMBa transfer talk, University of Bath</span>
+      </li>
+      <li class="row">
+        <span class="date">Jul 2025</span>
+        <span><span class="what">Recovering drivers from rough solution flows</span><span class="kind">Talk and poster</span></span>
+        <span class="venue">SAMBa Conference 2025</span>
+      </li>
+      <li class="row">
+        <span class="date">May 2025</span>
+        <span><span class="what">Implicit and inverse function theorems for rough differential equations</span><span class="kind">Talk</span></span>
+        <span class="venue">University of Bath</span>
+      </li>
+      <li class="row">
+        <span class="date">Nov 2024</span>
+        <span><span class="what">Rough paths and an inverse problem</span><span class="kind">Talk</span></span>
+        <span class="venue">PSS, University of Bath</span>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<section id="projects" class="sec" aria-labelledby="projects-h">
+  <h2 id="projects-h">Projects</h2>
+  <div class="sec-body">
+    <p class="prose muted" style="margin: 0">Research projects from before and during the PhD, and group projects with external partners from SAMBa's Integrative Think Tanks.</p>
+
+    <h3 class="sub">Research projects</h3>
+    <article class="project">
+      <div class="project-head">
+        <span class="date">2025</span>
+        <div>
+          <h4>Inverse and implicit function theorems for rough differential equations</h4>
+          <p class="meta">Research project, Bath · supervised by Dr Avi Mayorcas</p>
+          <p class="desc">When can the driver of an RDE \(\mathrm{d}Y_t = f(Y_t)\,\mathrm{d}\mathbf{X}_t\) be recovered from its solution? For scalar equations with geometric drivers and nowhere-vanishing \(f\) the recovery is explicit, \(X_t = X_0 + \varphi(Y_t) - \varphi(Y_0)\) with \(\varphi' = 1/f\); when \(f\) has zeros, the solution is confined between them and the recovery becomes ill-conditioned near them.</p>
+          <button class="tog" type="button" aria-expanded="false" aria-controls="fig-rough" data-figure="rough" hidden><span class="ic" aria-hidden="true"></span>Interactive figure</button>
+        </div>
+      </div>
+      <div class="fig-panel" id="fig-rough" hidden></div>
+    </article>
+    <article class="project">
+      <div class="project-head">
+        <span class="date">2023</span>
+        <div>
+          <h4>The inverse problem for rough differential equations</h4>
+          <p class="meta">Summer internship, Warwick · supervised by Prof. Anastasia Papavasiliou</p>
+          <p class="desc">Estimating the driving noise from discrete observations of RDE outputs.</p>
+        </div>
+      </div>
+    </article>
+    <article class="project">
+      <div class="project-head">
+        <span class="date">2023</span>
+        <div>
+          <h4>Numerical solutions of stochastic differential equations</h4>
+          <p class="meta">MEng dissertation, Warwick · supervised by Prof. Aleksandar Mijatović</p>
+          <p class="desc">A survey of strong and weak discretisation schemes and the theory behind them, from Euler–Maruyama and Milstein to higher-order and extrapolated schemes, with applications to option pricing, multi-dimensional models and Monte Carlo solutions of PDEs.</p>
+          <button class="tog" type="button" aria-expanded="false" aria-controls="fig-dissertation" data-figure-tabs hidden><span class="ic" aria-hidden="true"></span>Interactive figures</button>
+        </div>
+      </div>
+      <div class="fig-panel" id="fig-dissertation" hidden>
+        <div class="tabs" role="tablist" aria-label="Dissertation figures">
+          <button class="tab" type="button" role="tab" id="tab-sde" aria-selected="true" aria-controls="tabpanel-dissertation" data-tab="sde">Strong convergence</button>
+          <button class="tab" type="button" role="tab" id="tab-lv" aria-selected="false" aria-controls="tabpanel-dissertation" data-tab="lv" tabindex="-1">Predator–prey model</button>
+        </div>
+        <div id="tabpanel-dissertation" role="tabpanel" aria-labelledby="tab-sde"></div>
+      </div>
+    </article>
+
+    <h3 class="sub">Integrative Think Tanks and group projects</h3>
+    <article class="project">
+      <div class="project-head">
+        <span class="date">Jan 2026</span>
+        <div>
+          <h4>Stochastic microscopic model for geographic atrophy</h4>
+          <p class="meta">Integrative Think Tank · with the Macular Society</p>
+          <p class="desc">A lattice model for geographic atrophy, the advanced form of dry age-related macular degeneration. Cells of the retinal pigment epithelium accumulate stress from dead neighbours and die once it passes a threshold. A waste-removal term that clears stress faster as the lesion grows reproduces the plateau in lesion size seen clinically, and the final lesion size jumps sharply as the threshold varies.</p>
+          <button class="tog" type="button" aria-expanded="false" aria-controls="fig-ga" data-figure="ga" hidden><span class="ic" aria-hidden="true"></span>Interactive figure</button>
+        </div>
+      </div>
+      <div class="fig-panel" id="fig-ga" hidden></div>
+    </article>
+    <article class="project">
+      <div class="project-head">
+        <span class="date">Jun 2025</span>
+        <div>
+          <h4>Selecting true fluorescence intensity traces from artefacts</h4>
+          <p class="meta">Integrative Think Tank · with Dr Charlotte Dodson (Life Sciences, Bath)</p>
+          <p class="desc">Gaussian hidden Markov models, and total-variation denoising with change-point detection, to separate genuine two-dye intensity traces from artefacts.</p>
+          <button class="tog" type="button" aria-expanded="false" aria-controls="fig-trace" data-figure="trace" hidden><span class="ic" aria-hidden="true"></span>Interactive figure</button>
+        </div>
+      </div>
+      <div class="fig-panel" id="fig-trace" hidden></div>
+    </article>
+    <article class="project">
+      <div class="project-head">
+        <span class="date">May 2025</span>
+        <div>
+          <h4>Spatial corrections for random forests in models of wildfire risk</h4>
+          <p class="meta">Group research project · supervised by Dr Evangelos Evangelou</p>
+          <p class="desc">Random forests predict fire probabilities site by site and ignore spatial dependence. We corrected them with an autologistic model, fitting the interaction by pseudo-likelihood and estimating corrected probabilities by Gibbs sampling.</p>
+          <button class="tog" type="button" aria-expanded="false" aria-controls="fig-wildfire" data-figure="wildfire" hidden><span class="ic" aria-hidden="true"></span>Interactive figure</button>
+        </div>
+      </div>
+      <div class="fig-panel" id="fig-wildfire" hidden></div>
+    </article>
+    <article class="project">
+      <div class="project-head">
+        <span class="date">Mar 2025</span>
+        <div>
+          <h4>Optimising scanning: decision making in experiments</h4>
+          <p class="meta">Integrative Think Tank · with Diamond Light Source</p>
+          <p class="desc">Comparing raster, spiral and Lissajous scan paths by X-ray dose and by the expected time spent in features of interest.</p>
+          <button class="tog" type="button" aria-expanded="false" aria-controls="fig-scan" data-figure="scan" hidden><span class="ic" aria-hidden="true"></span>Interactive figure</button>
+        </div>
+      </div>
+      <div class="fig-panel" id="fig-scan" hidden></div>
+    </article>
+  </div>
+</section>
+
+<section id="experience" class="sec" aria-labelledby="experience-h">
+  <h2 id="experience-h">Experience and activities</h2>
+  <div class="sec-body">
+    <ul class="rows">
+      <li class="row">
+        <span class="date">2026</span>
+        <span><span class="what">Research intern, SURE-AI, Oslo</span><span class="detail">Developing a platform for mathematicians to share and explore results with AI-aided discovery; model selection for agentic workflows.</span></span>
+        <span class="venue"></span>
+      </li>
+      <li class="row">
+        <span class="date">2025 –</span>
+        <span><span class="what">Teaching assistant, University of Bath</span><span class="detail">Second-year tutorials in analysis, algebra and numerical analysis.</span></span>
+        <span class="venue"></span>
+      </li>
+      <li class="row">
+        <span class="date">2026</span>
+        <span><span class="what">Co-organiser, SAMBa Conference 2026</span><span class="detail">One of four organisers. <a href="https://bencekaszas.github.io/samba-conference-2026/">Conference website</a></span></span>
+        <span class="venue"></span>
+      </li>
+      <li class="row">
+        <span class="date"></span>
+        <span><span class="what">Mentor, Zero Gravity</span><span class="detail">Mentoring sixth-form students from disadvantaged backgrounds applying to university.</span></span>
+        <span class="venue"></span>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<section id="education" class="sec" aria-labelledby="education-h">
+  <h2 id="education-h">Education</h2>
+  <div class="sec-body">
+    <ul class="rows">
+      <li class="row">
+        <span class="date">2024 –</span>
+        <span class="what">PhD, Statistical Applied Mathematics</span>
+        <span class="venue">University of Bath, SAMBa CDT</span>
+      </li>
+      <li class="row">
+        <span class="date">2020 – 2024</span>
+        <span class="what">MEng, Discrete Mathematics, First class</span>
+        <span class="venue">University of Warwick</span>
+      </li>
+    </ul>
+  </div>
+</section>
+
+</div>
+
+<section id="contact" class="contact" aria-labelledby="contact-h">
+  <div class="wrap top">
+    <div>
+      <h2 id="contact-h">Contact</h2>
+      <a class="email" href="mailto:pnc28@bath.ac.uk">pnc28@bath.ac.uk</a>
+      <p class="dept">Department of Mathematical Sciences, University of Bath</p>
+    </div>
+    <ul class="contact-links">
+      <li><a href="https://researchportal.bath.ac.uk/en/persons/peter-crew/">Bath research profile</a></li>
+      <li><a href="https://samba.ac.uk/student/peter-crew/">SAMBa profile</a></li>
+      <li><a href="assets/peter-crew-cv.pdf">CV (PDF)</a></li>
+    </ul>
+  </div>
+  <div class="wrap foot">© 2026 Peter Crew</div>
+</section>
+
+</main>
+</body>
+</html>
