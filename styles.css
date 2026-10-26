@@ -143,6 +143,17 @@ a:hover { color: var(--rust); }
 .row .kind { display: block; font-size: 14px; color: var(--muted); }
 .row .detail { display: block; font-size: 15px; color: var(--body); }
 .row .venue { font-size: 15px; color: var(--body); }
+/* One item presented at several venues: the title sits above, then one
+   date/venue line per venue, with a bracket in the left margin joining the dates. */
+.row-group .group-head { grid-column: 2; margin-bottom: 8px; }
+.row-group .date { grid-column: 1; }
+.row-group .venue { grid-column: 2; }
+.row-group > :nth-child(3), .row-group > :nth-child(4) { grid-row: 2; }
+.row-group > :nth-child(5), .row-group > :nth-child(6) { grid-row: 3; }
+.row-group .brace {
+  grid-column: 1; grid-row: 2 / span 2; width: 7px; margin: 2px 0 2px -13px;
+  border: 1.5px solid #b8c1b6; border-right: 0; border-radius: 6px 0 0 6px;
+}
 
 /* Projects */
 
@@ -288,6 +299,9 @@ a:hover { color: var(--rust); }
   .facts { padding: 22px 20px; }
   .row, .project-head { grid-template-columns: minmax(0, 1fr); }
   .row .venue { grid-column: auto; }
+  .row-group { grid-template-columns: max-content minmax(0, 1fr); column-gap: 16px; }
+  .row-group .group-head { grid-column: 1 / -1; }
+  .row-group .venue { grid-column: 2; }
   .display { padding: 14px 14px; }
   .fig { padding: 16px; }
   .fig-readout { gap: 8px 24px; }
