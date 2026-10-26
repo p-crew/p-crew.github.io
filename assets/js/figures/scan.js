@@ -14,11 +14,11 @@
 <div>
 <p style="margin: 0 0 6px; font-size: 13px; color: #515C55">Sample: 30 features, found ones in rust</p>
 <canvas width="600" height="600" role="img" aria-label="The unit square with circular features; the scan path is drawn progressively and features it has passed over are coloured." style="display: block; width: 100%; max-width: 420px; height: auto; aspect-ratio: 1 / 1; background: #F6F5EF" data-ref="setCanvas"></canvas>
-<p style="margin: 8px 0 0; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #515C55">distance <span data-text="distLabel"></span> · found <span data-text="foundLabel"></span> / 30</p>
+<p style="margin: 8px 0 0; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #515C55">distance <span data-text="distLabel"></span> · found <span data-text="foundLabel"></span> / 30<span data-text="completionLabel"></span></p>
 </div>
 <div style="min-width: 0">
-<p style="margin: 0 0 6px; font-size: 13px; color: #515C55">Probability a feature has been found, against distance scanned</p>
-<svg viewBox="0 0 440 300" role="img" aria-label="Fraction of features found against distance travelled for the three scan paths." style="display: block; width: 100%; height: auto">
+<p style="margin: 0 0 6px; font-size: 13px; color: #515C55">Probability a feature has been found, against distance budget</p>
+<svg viewBox="0 0 440 300" role="img" aria-label="Fraction of features found against distance budget. A curve stays flat once its path has ended." style="display: block; width: 100%; height: auto">
 <line x1="44" x2="424" y1="20" y2="20" stroke="#EDF0E7"></line>
 <line x1="44" x2="424" y1="130" y2="130" stroke="#EDF0E7"></line>
 <line x1="44" x2="424" y1="240" y2="240" stroke="#B8C1B6"></line>
@@ -29,7 +29,7 @@
 <text x="44" y="258" font-family="IBM Plex Mono, monospace" font-size="11" fill="#657061" text-anchor="middle">0</text>
 <text x="234" y="258" font-family="IBM Plex Mono, monospace" font-size="11" fill="#657061" text-anchor="middle">5</text>
 <text x="424" y="258" font-family="IBM Plex Mono, monospace" font-size="11" fill="#657061" text-anchor="middle">10</text>
-<text x="424" y="276" font-family="IBM Plex Mono, monospace" font-size="11" fill="#657061" text-anchor="end">distance</text>
+<text x="424" y="276" font-family="IBM Plex Mono, monospace" font-size="11" fill="#657061" text-anchor="end">distance budget</text>
 <line y1="20" y2="240" stroke="#D9DDD2" stroke-dasharray="3 3" data-bind="x1:markX; x2:markX"></line>
 <path fill="none" data-bind="d:curveRaster; stroke:colRaster; stroke-width:wRaster"></path>
 <path fill="none" data-bind="d:curveSpiral; stroke:colSpiral; stroke-width:wSpiral"></path>
@@ -44,7 +44,7 @@
 </label>
 </div>
 </div>
-<figcaption style="margin-top: 14px; font-size: 14px; color: #515C55">Features are discs of radius \(\rho\) with centres uniform on the unit square; a feature counts as found once the beam (radius 0.01) touches it. All three paths move at the same speed; the raster and spiral use line spacing 0.1. The curves are Monte Carlo estimates over 600 features. An illustration of the trade-off studied in the project, not its results: the spiral finds features fastest at first but stops at the inscribed circle, so it never reaches the corners; the raster is slower to start but overtakes it; the Lissajous path crosses itself, so part of its length is spent on ground already covered.</figcaption>
+<figcaption style="margin-top: 14px; font-size: 14px; color: #515C55">Features are discs of radius \(\rho\) with centres uniform on the unit square; the beam has radius 0.01. Contacts are checked at distance increments of 0.004. All three paths move at the same speed until their endpoint or a distance budget of 10; the spiral ends at about 7.88 and its discovery probability then stays constant. The raster and spiral use line spacing 0.1. The curves are Monte Carlo estimates over 600 features. This illustrates the project's trade-off using synthetic paths: the spiral covers the centre quickly but leaves the corners, the raster extends coverage across the square, and the Lissajous path revisits regions it has already scanned.</figcaption>
 </figure>
 `;
 
@@ -95,11 +95,12 @@
       var out = [pts[0]], ds = this.ds, carry = 0, total = 0;
       for (var i = 1; i < pts.length && total < this.Lmax; i++) {
         var ax = pts[i - 1][0], ay = pts[i - 1][1], dx = pts[i][0] - ax, dy = pts[i][1] - ay, len = Math.hypot(dx, dy), s = ds - carry;
-        while (s <= len && total < this.Lmax) { out.push([ax + dx * s / len, ay + dy * s / len]); total += ds; s += ds; }
+        while (s <= len && total + ds <= this.Lmax + 1e-12) { out.push([ax + dx * s / len, ay + dy * s / len]); total = (out.length - 1) * ds; s += ds; }
         carry = len - (s - ds);
       }
       return out;
     }
+    pathLength(key) { return Math.min(this.Lmax, (this.paths[key].length - 1) * this.ds); }
     firstHits(pts, centres, R) {
       var R2 = R * R, hits = new Float64Array(centres.length);
       for (var c = 0; c < centres.length; c++) {
@@ -156,13 +157,13 @@
     play() {
       if (this.raf) cancelAnimationFrame(this.raf);
       var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      var self = this, redraw = function () { self.draw(); };
-      if (reduce) { this.setState({ prog: this.Lmax }, redraw); return; }
+      var self = this, redraw = function () { self.draw(); }, end = this.pathLength(this.state.path);
+      if (reduce) { this.setState({ prog: end }, redraw); return; }
       var t0 = performance.now(), dur = 9000;
       var tick = function (now) {
-        var p = Math.min(1, (now - t0) / dur);
-        self.setState({ prog: p * self.Lmax }, redraw);
-        if (p < 1) self.raf = requestAnimationFrame(tick);
+        var distance = Math.min(end, (now - t0) / dur * self.Lmax);
+        self.setState({ prog: distance }, redraw);
+        if (distance < end) self.raf = requestAnimationFrame(tick);
       };
       this.setState({ prog: 0 }, redraw);
       this.raf = requestAnimationFrame(tick);
@@ -170,15 +171,16 @@
     componentDidMount() { this.play(); }
     componentWillUnmount() { if (this.raf) cancelAnimationFrame(this.raf); }
     renderVals() {
-      var self = this, st = this.state, hits = this.showHits[st.path], found = 0;
-      for (var k = 0; k < hits.length; k++) if (hits[k] <= st.prog) found++;
+      var self = this, st = this.state, hits = this.showHits[st.path], found = 0, end = this.pathLength(st.path), distance = Math.min(st.prog, end);
+      for (var k = 0; k < hits.length; k++) if (hits[k] <= distance) found++;
       var btn = function (on) {
         return 'font: inherit; cursor: pointer; min-height: 44px; padding: 0 18px; border-radius: 999px; font-size: 14px; border: 1px solid #244F46; background: ' + (on ? '#244F46' : '#FFFFFF') + '; color: ' + (on ? '#FFFFFF' : '#244F46');
       };
       var pick = function (k) { return function () { self.setState({ path: k }, function () { self.play(); }); }; };
       var out = {
         setCanvas: this.setCanvas, rho: st.rho, rhoLabel: st.rho.toFixed(3),
-        distLabel: st.prog.toFixed(2), foundLabel: String(found), markX: (44 + 38 * st.prog).toFixed(1),
+        distLabel: distance.toFixed(2), foundLabel: String(found), markX: (44 + 38 * distance).toFixed(1),
+        completionLabel: distance >= end && end < this.Lmax ? ' · path complete' : '',
         pickRaster: pick('raster'), pickSpiral: pick('spiral'), pickLiss: pick('liss'),
         replay: function () { self.play(); },
         setRho: function (e) {

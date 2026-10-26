@@ -6,6 +6,9 @@
 <figure style="margin: 0; font-family: 'IBM Plex Sans', system-ui, sans-serif; color: #203D36; background: #FFFFFF; border: 1px solid #D9DDD2; border-radius: 4px; padding: 24px; box-sizing: border-box; font-size: 15px; line-height: 1.55">
 <p style="margin: 0 0 8px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #515C55"><span style="display: inline-block; width: 14px; height: 2px; vertical-align: middle; background: #A3ACA0"></span> observed intensity   <span style="display: inline-block; width: 14px; height: 2px; vertical-align: middle; background: #244F46"></span> true state   <span style="display: inline-block; width: 14px; height: 2px; vertical-align: middle; background: #9D5C3E"></span> Viterbi decoding</p>
 <svg viewBox="0 0 880 320" role="img" aria-label="A noisy synthetic intensity trace over 600 frames, with the true hidden state and the decoded state drawn as step functions." style="display: block; width: 100%; height: auto">
+<line x1="56" x2="56" y1="16" y2="296" stroke="#B8C1B6"></line>
+<text x="48" y="15" font-family="IBM Plex Mono, monospace" font-size="10" fill="#657061" text-anchor="end" data-text="yMaxLabel"></text>
+<text x="48" y="306" font-family="IBM Plex Mono, monospace" font-size="10" fill="#657061" text-anchor="end" data-text="yMinLabel"></text>
 <line x1="56" x2="864" stroke="#EDF0E7" data-bind="y1:yH; y2:yH"></line>
 <line x1="56" x2="864" stroke="#EDF0E7" data-bind="y1:yQ; y2:yQ"></line>
 <line x1="56" x2="864" stroke="#EDF0E7" data-bind="y1:yP; y2:yP"></line>
@@ -27,7 +30,7 @@
 <span style="font-size: 13px; color: #515C55">frames decoded correctly: <span style="font-family: 'IBM Plex Mono', monospace"><span data-text="acc"></span></span></span>
 <button type="button" style="font: inherit; cursor: pointer; min-height: 44px; padding: 0 18px; border-radius: 999px; border: 1px solid #244F46; background: #244F46; color: #FFFFFF; font-size: 14px" data-on="click:again">New trace</button>
 </div>
-<figcaption style="margin-top: 14px; font-size: 14px; color: #515C55">A synthetic trace from a four-state hidden Markov model with Gaussian emissions \(y_t \mid z_t = k \sim \mathcal{N}(\mu_k, s^2)\): the molecule switches between a high state H and a quenched state Q, one dye photobleaches (PB), then the other (Z). The Viterbi path is the most likely state sequence given the trace, computed here with the true parameters. Traces whose decoding does not follow this pattern were treated as artefacts in the project. Levels and rates are illustrative; no project data is shown.</figcaption>
+<figcaption style="margin-top: 14px; font-size: 14px; color: #515C55">A synthetic trace from a four-state hidden Markov model with Gaussian emissions \(y_t \mid z_t = k \sim \mathcal{N}(\mu_k, s^2)\): the molecule switches between a high state H and a quenched state Q, one dye photobleaches (PB), then the other (Z). Example traces are selected to show switching and bleaching. Viterbi gives the most likely state sequence under the underlying HMM, using its true parameters. The intensity axis scales to show every observation, including negative intensities. Traces whose decoding did not follow the expected pattern were treated as artefacts in the project. Levels and rates are illustrative; no project data is shown.</figcaption>
 </figure>
 `;
 
@@ -96,19 +99,23 @@
     renderVals() {
       var self = this, st = this.state, T = this.T, mu = this.mu, s = st.s;
       var X = function (t) { return 56 + 808 * t / (T - 1); };
-      var Y = function (v) { return 250 - 200 * v; };
       var y = new Float64Array(T);
       for (var t = 0; t < T; t++) y[t] = mu[this.z[t]] + s * this.noise[t];
+      var lo = Math.min(0, Math.min.apply(null, y)), hi = Math.max(1, Math.max.apply(null, y));
+      var pad = 0.08 * (hi - lo);
+      lo = Math.floor((lo - pad) * 10) / 10; hi = Math.ceil((hi + pad) * 10) / 10;
+      var Y = function (v) { return 296 - 280 * (v - lo) / (hi - lo); };
       var dec = this.viterbi(y, s), ok = 0;
       var obs = '', truth = '', dd = '';
       for (var i = 0; i < T; i++) {
-        obs += (i ? 'L' : 'M') + X(i).toFixed(1) + ' ' + Math.max(4, Math.min(296, Y(y[i]))).toFixed(1);
+        obs += (i ? 'L' : 'M') + X(i).toFixed(1) + ' ' + Y(y[i]).toFixed(1);
         truth += (i ? 'L' + X(i).toFixed(1) + ' ' + Y(mu[this.z[i - 1]]).toFixed(1) + 'L' : 'M') + X(i).toFixed(1) + ' ' + Y(mu[this.z[i]]).toFixed(1);
         dd += (i ? 'L' + X(i).toFixed(1) + ' ' + Y(mu[dec[i - 1]]).toFixed(1) + 'L' : 'M') + X(i).toFixed(1) + ' ' + Y(mu[dec[i]]).toFixed(1);
         if (dec[i] === this.z[i]) ok++;
       }
       return {
         obs: obs, truth: truth, dec: dd,
+        yMinLabel: lo.toFixed(1), yMaxLabel: hi.toFixed(1),
         yH: Y(mu[0]), yQ: Y(mu[1]), yP: Y(mu[2]), yZ: Y(mu[3]),
         tH: Y(mu[0]) + 4, tQ: Y(mu[1]) + 4, tP: Y(mu[2]) + 4, tZ: Y(mu[3]) + 4,
         s: s, sLabel: s.toFixed(2), acc: (100 * ok / T).toFixed(1) + '%',

@@ -53,3 +53,11 @@ Notes for Pages:
 ## Figures
 
 The figures run simulations in the browser and are illustrations, not research outputs. Each caption says what is computed and which parameters are illustrative. The trace (ITT22) and scan-path (ITT21) figures use synthetic data only. Animations respect the reduced-motion setting.
+
+Run the mathematical regression checks with Node.js (no dependencies or build step):
+
+```bash
+node --test tests/figure-math.test.cjs
+```
+
+These check the GBM bound's constants and excluded cases, the scalar rough flow and inverse domain, preservation of Gaussian observations, scan distances and animation speed, and the zero-noise numerical error in the predator–prey model.
