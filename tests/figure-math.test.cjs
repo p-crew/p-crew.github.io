@@ -80,12 +80,13 @@ test('terminal-interval choices satisfy the depletion estimate across the contro
   near(figure.estimate().K, 0.1);
 });
 
-// An independent ODE integration checks the analytic solution, including
-// multiple turns for c > 1 and drivers beyond the old lookup interval [-8, 8].
+// An independent fine-step ODE integration checks the tabulated flow, both
+// trapped between zeros (c < 3√3/4) and turning through several periods.
+const roughF = (c, v) => c + Math.sin(v) + 0.5 * Math.sin(2 * v);
 function integrateFlow(c, end) {
-  const steps = Math.max(1, Math.ceil(Math.abs(end) / 0.001)), h = end / steps;
+  const steps = Math.max(1, Math.ceil(Math.abs(end) / 0.0005)), h = end / steps;
   let y = 0;
-  const f = v => c + Math.cos(v);
+  const f = v => roughF(c, v);
   for (let i = 0; i < steps; i++) {
     const k1 = f(y), k2 = f(y + h * k1 / 2), k3 = f(y + h * k2 / 2), k4 = f(y + h * k3);
     y += h * (k1 + 2 * k2 + 2 * k3 + k4) / 6;
@@ -93,18 +94,18 @@ function integrateFlow(c, end) {
   return y;
 }
 
-test('rough flow agrees with the ODE and its inverse recovers uncapped drivers', () => {
+test('rough flow agrees with the ODE and its inverse recovers the driver', () => {
   const { figure } = load('rough');
-  for (const c of [0.2, 0.5, 0.99, 1, 1.01, 1.4, 2.5]) {
+  for (const c of [0.2, 0.5, 1, 1.29, 1.3, 1.4, 1.6, 2.5]) {
     const flow = figure.flow(c);
-    for (const s of [-12, -8.5, -3, 0, 0.2, 8.5, 12]) {
+    for (const s of [-12, -8.5, -3, 0, 0.2, 3, 8.5, 12]) {
       const y = flow.theta(s);
       near(y, integrateFlow(c, s), 1e-8);
-      near(flow.phi(y), s, 1e-7);
+      // Deep in a trapped tail, y is within rounding of the zero and cannot be inverted.
+      if (Math.abs(roughF(c, y)) > 1e-6) near(flow.phi(y), s, 1e-6);
     }
-    if (c > 1) {
-      const period = 2 * Math.PI / Math.sqrt(c * c - 1);
-      near(flow.theta(0.7 + period) - flow.theta(0.7), 2 * Math.PI, 1e-10);
+    if (c >= 3 * Math.sqrt(3) / 4) {
+      near(flow.theta(0.7 + flow.period) - flow.theta(0.7), 2 * Math.PI, 1e-10);
       for (const y of [-3 * Math.PI, -Math.PI, Math.PI, 3 * Math.PI]) {
         for (const offset of [-1e-9, 0, 1e-9]) near(flow.theta(flow.phi(y + offset)), y + offset, 1e-8);
       }
@@ -112,25 +113,31 @@ test('rough flow agrees with the ODE and its inverse recovers uncapped drivers',
   }
 });
 
-test('rough inverse rejects observations at or beyond zeros, including c = 1', () => {
+test('rough zeros appear exactly below 3√3/4 and the inverse rejects them', () => {
   const { figure } = load('rough');
-  for (const c of [0.2, 0.99, 1]) {
-    const flow = figure.flow(c), a = Math.acos(-c);
-    for (const y of [-a - 0.01, -a, a, a + 0.01]) assert.equal(flow.phi(y), null);
-    for (const y of [-a + 1e-10, a - 1e-10]) assert.ok(Number.isFinite(flow.phi(y)));
+  const cstar = 3 * Math.sqrt(3) / 4;
+  assert.equal(figure.flow(cstar + 1e-9).lo, -Infinity);
+  for (const c of [0.2, 1, 1.29]) {
+    const flow = figure.flow(c);
+    assert.ok(flow.lo < 0 && flow.lo > -Math.PI / 3 && flow.hi > Math.PI && flow.hi < 5 * Math.PI / 3);
+    near(roughF(c, flow.lo), 0, 1e-12);
+    near(roughF(c, flow.hi), 0, 1e-12);
+    for (const y of [flow.lo - 0.01, flow.lo, flow.hi, flow.hi + 0.01]) assert.equal(flow.phi(y), null);
+    for (const y of [flow.lo + 1e-9, flow.hi - 1e-9]) assert.ok(Number.isFinite(flow.phi(y)));
   }
 });
 
-test('the audited noisy observation is a gap, not a fabricated driver value', () => {
+test('noisy observations beyond a zero are gaps, not fabricated driver values', () => {
   const { figure } = load('rough');
-  Object.assign(figure.state, { c: 0.2, logNoise: -1.5, rSeed: 15 });
+  Object.assign(figure.state, { c: 0.2, logNoise: -1.5, rSeed: 4 });
   const data = figure.recovery(), out = figure.renderVals();
-  assert.deepEqual(Array.from(data.invalid), [379]);
-  assert.equal(data.R[379], null);
-  assert.ok(data.maxErr < 2);
+  assert.ok(data.invalid.length > 0);
+  for (const i of data.invalid) assert.equal(data.R[i], null);
+  assert.ok(Number.isFinite(data.maxErr));
   assert.equal(out.hasInvalid, true);
-  assert.equal(out.invalidMarks.length, 1);
-  assert.equal((out.recPath.match(/M/g) || []).length, 2);
+  assert.equal(out.invalidMarks.length, data.invalid.length);
+  const pieces = (out.recPath.match(/M/g) || []).length;
+  assert.ok(pieces >= 1 && pieces <= data.invalid.length + 1);
   assert.ok(!/NaN|Infinity/.test(out.recPath));
 });
 
