@@ -260,5 +260,5 @@ test('GBM plane tracks drag pointer capture, touch cancellation, and keyboard co
 test('Lotka–Volterra caption omits the dissertation aside', () => {
   const { markup } = load('lv');
   assert.doesNotMatch(markup, /as in the dissertation/);
-  assert.match(markup, /Independent multiplicative noise on each population\./);
+  assert.match(markup, /independent multiplicative noise on each population/i);
 });

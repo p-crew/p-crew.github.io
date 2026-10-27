@@ -9,9 +9,9 @@
 
   var markup = String.raw`
 <figure class="fig">
-<div class="fig-model">
-<div>Income \(\mathrm{d}\eta_s = \mu\eta_s\,\mathrm{d}s + \sigma\eta_s\,\mathrm{d}B_s\); CRRA utilities \(u'(x) = x^{-\gamma}\)</div>
-<div>\(\chi = r - \delta - \gamma\mu + \tfrac12\gamma(\gamma+1)\sigma^2\)</div>
+<div class="fig-head">
+<p class="fig-title">Non-existence for long horizons</p>
+<p class="fig-lead">Income follows a geometric Brownian motion, \(\mathrm{d}\eta_s = \mu\eta_s\,\mathrm{d}s + \sigma\eta_s\,\mathrm{d}B_s\), and utility is CRRA, \(u'(x) = x^{-\gamma}\). If \(\sigma > 0\) and \(\chi &lt; 0\), there is no admissible solution once the horizon \(T\) is long enough: consumption must exceed income by a factor that grows with \(T\), which eventually drives wealth below zero on some income paths.</p>
 </div>
 <div class="fig-plots">
 <div>
@@ -33,7 +33,7 @@
 </svg>
 </div>
 <div>
-<p class="fig-label">40 paths of the wealth bound \(w_0 - (L-1)\int_0^t Y_s\,\mathrm{d}s\)</p>
+<p class="fig-label">Wealth bound \(w_0 - (L-1)\int_0^t Y_s\,\mathrm{d}s\) on 40 income paths</p>
 <svg viewBox="0 0 600 360" role="img" aria-label="Numerical evaluations of the conservative wealth bound on 40 simulated income paths. Crossings illustrate the large-horizon argument; they do not certify a particular horizon.">
 <defs><clipPath id="cpW"><rect x="56" y="24" width="520" height="296"></rect></clipPath></defs>
 <rect x="56" width="520" fill="#9D5C3E" fill-opacity="0.07" data-bind="y:zeroY; height:negH"></rect>
@@ -67,14 +67,14 @@
 </div>
 <dl class="fig-readout">
 <div><dt>\(\chi\)</dt><dd data-text="chiLabel"></dd></div>
-<div><dt>\(L(T) = K_\varepsilon e^{-\chi(T-\varepsilon-\ell)/\gamma}\)</dt><dd data-text="LLabel"></dd></div>
+<div><dt>Consumption floor \(L\)</dt><dd data-text="LLabel"></dd></div>
 <div><dt>\(\varepsilon\), \(K_\varepsilon\)</dt><dd><span data-text="epsLabel"></span>, <span data-text="KLabel"></span></dd></div>
-<div><dt>Below zero by \(t = \ell\)</dt><dd class="c-rust" data-text="negLabel"></dd></div>
+<div><dt>Paths below zero at \(t = \ell\)</dt><dd class="c-rust" data-text="negLabel"></dd></div>
 </dl>
-<p class="fig-status warn" data-show="vLong" role="status">\(\sigma > 0\), \(\chi &lt; 0\): no admissible solution once \(T\) is large enough. The simulation does not locate the threshold.</p>
-<p class="fig-status quiet" data-show="vZero" role="status">\(\sigma = 0\): deterministic income, which the theorem excludes.</p>
-<p class="fig-status" data-show="vNa" role="status">\(\chi \ge 0\): the argument does not apply.</p>
-<figcaption class="fig-caption">For \(\sigma > 0\), solvency at \(T\) forces wealth to stay non-negative. If also \(\chi &lt; 0\), the consumption floor \(c_t/\eta_t \ge L(T)\) drives this bound below zero with positive probability for large \(T\). Paths turn rust once negative; \(\lambda = w_0 = \eta_0 = \ell = 1\).</figcaption>
+<p class="fig-status warn" data-show="vLong" role="status">\(\sigma > 0\), \(\chi &lt; 0\): no admissible solution once \(T\) is large enough.</p>
+<p class="fig-status quiet" data-show="vZero" role="status">\(\sigma = 0\): income is deterministic, which the theorem excludes.</p>
+<p class="fig-status" data-show="vNa" role="status">\(\chi \ge 0\): the non-existence argument does not apply.</p>
+<figcaption class="fig-caption">Here \(\chi = r - \delta - \gamma\mu + \tfrac12\gamma(\gamma+1)\sigma^2\). On an initial interval \([0, \ell]\), consumption is at least \(L\) times income, where \(L = K_\varepsilon \exp(-\chi(T-\varepsilon-\ell)/\gamma)\) and \(\varepsilon\), \(K_\varepsilon\) come from the terminal-interval estimates. Wealth at time \(t\) is then at most \(w_0 - (L-1)\int_0^t Y_s\,\mathrm{d}s\), where \(Y_s = e^{-rs}\eta_s\) is discounted income. We take \(w_0 = \eta_0 = \ell = 1\) and terminal weight \(\lambda = 1\). The simulation illustrates the argument; it does not locate the critical horizon.</figcaption>
 </figure>
 `;
 

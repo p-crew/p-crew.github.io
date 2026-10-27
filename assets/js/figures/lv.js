@@ -4,9 +4,10 @@
 
   var markup = String.raw`
 <figure class="fig">
-<div class="fig-model">
-<div>\(\mathrm{d}X_t = (\beta_1 - \alpha_1 Y_t)X_t\,\mathrm{d}t + \sigma X_t\,\mathrm{d}W^{(1)}_t\)</div>
-<div>\(\mathrm{d}Y_t = (\alpha_2 X_t - \beta_2)Y_t\,\mathrm{d}t + \sigma Y_t\,\mathrm{d}W^{(2)}_t\)</div>
+<div class="fig-head">
+<p class="fig-title">A stochastic predator–prey model</p>
+<p class="fig-lead">Lotka–Volterra dynamics with independent multiplicative noise on each population, simulated with the Milstein scheme. Without noise the orbits are closed; with noise the path drifts from one orbit to another.</p>
+<div class="fig-eq">\[\begin{aligned} \mathrm{d}X_t &= (\beta_1 - \alpha_1 Y_t)\,X_t\,\mathrm{d}t + \sigma X_t\,\mathrm{d}W^{(1)}_t \\ \mathrm{d}Y_t &= (\alpha_2 X_t - \beta_2)\,Y_t\,\mathrm{d}t + \sigma Y_t\,\mathrm{d}W^{(2)}_t \end{aligned}\]</div>
 </div>
 <div class="fig-plots">
 <div>
@@ -64,8 +65,8 @@
 <input type="range" min="0" max="0.15" step="0.005" aria-label="noise sigma" data-bind="value:sigma" data-on="input:setSigma"></label>
 <div class="fig-actions"><button type="button" class="fig-btn solid" data-on="click:again">New path</button></div>
 </div>
-<p class="fig-status quiet" data-show="zeroNoise" role="status">At \(\sigma = 0\), Milstein reduces to Euler, so any drift away from the Runge–Kutta orbit is discretisation error.</p>
-<figcaption class="fig-caption">Independent multiplicative noise on each population. The noise terms commute, so Milstein needs no Lévy areas. Step \(h = 0.005\), \(\beta_1 = \beta_2 = 0.75\), \(\alpha_1 = 1\), \(\alpha_2 = 0.5\), from \((1, 1)\).</figcaption>
+<p class="fig-status quiet" data-show="zeroNoise" role="status">At \(\sigma = 0\) Milstein reduces to Euler, so any drift away from the Runge–Kutta orbit is discretisation error.</p>
+<figcaption class="fig-caption">Parameters \(\beta_1 = \beta_2 = 0.75\), \(\alpha_1 = 1\), \(\alpha_2 = 0.5\), step \(h = 0.005\), starting from \((1, 1)\). The two noise terms commute, so Milstein needs no Lévy areas; the deterministic reference uses Runge–Kutta.</figcaption>
 </figure>
 `;
 

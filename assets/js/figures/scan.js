@@ -4,6 +4,10 @@
 
   var markup = String.raw`
 <figure class="fig">
+<div class="fig-head">
+<p class="fig-title">Comparing scan paths</p>
+<p class="fig-lead">How quickly does each path find features scattered across a sample? All three paths move at the same speed; choose one to watch it scan.</p>
+</div>
 <div class="fig-actions" role="group" aria-label="Scan path">
 <button type="button" class="fig-btn" data-bind="aria-pressed:pressRaster" data-on="click:pickRaster">Snake raster</button>
 <button type="button" class="fig-btn" data-bind="aria-pressed:pressSpiral" data-on="click:pickSpiral">Spiral</button>
@@ -53,7 +57,7 @@
 </dl>
 </div>
 </div>
-<figcaption class="fig-caption">Features are discs of radius \(\rho\) placed uniformly on the unit square; the beam has radius 0.01. All three paths move at the same speed, up to a distance of 10. The spiral finds central features first but ends at 7.88 without reaching the corners; the Lissajous path rescans ground it has covered. Curves are Monte Carlo estimates over 600 features.</figcaption>
+<figcaption class="fig-caption">Features are discs of radius \(\rho\) placed uniformly on the unit square, and the beam has radius 0.01. The spiral finds central features first but ends at distance 7.88 without reaching the corners; the Lissajous path rescans ground it has already covered. Curves are Monte Carlo estimates over 600 features.</figcaption>
 </figure>
 `;
 

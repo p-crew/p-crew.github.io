@@ -43,7 +43,7 @@ a:hover { color: var(--rust); }
 
 :focus-visible { outline: 2px solid var(--rust); outline-offset: 3px; }
 
-.katex { font-size: 1.06em; }
+.katex { font-size: 1.06em; white-space: nowrap; } /* keep inline formulas on one line */
 .katex-display { margin: 0; overflow-x: auto; overflow-y: hidden; padding: 2px 0; }
 
 .sr-only {
@@ -190,7 +190,6 @@ a:hover { color: var(--rust); }
 
 /* Figure toggles */
 
-.toggles { display: flex; flex-wrap: wrap; gap: 0 12px; }
 .tog {
   font: inherit; cursor: pointer; display: inline-flex; align-items: center; gap: 10px;
   min-height: 44px; margin-top: 14px; padding: 0 18px 0 14px; border-radius: 999px;
@@ -210,22 +209,31 @@ a:hover { color: var(--rust); }
 .fig-panel[hidden] { display: none; }
 .fig-loading, .fig-error { margin: 0; padding: 24px; font-size: 14px; color: var(--muted); }
 
-.tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+/* Folder tabs: the selected tab joins the figure box below it. */
+.tabs { position: relative; z-index: 1; display: flex; gap: 2px; margin: 12px 0 -1px; }
 .tab {
-  font: inherit; cursor: pointer; min-height: 40px; padding: 0 16px; border-radius: 999px;
-  border: 1px solid var(--line); background: var(--white); color: var(--ink); font-size: 14px;
+  font: inherit; cursor: pointer; min-height: 40px; padding: 6px 16px; line-height: 1.3;
+  border: 1px solid transparent; border-bottom: 0; border-radius: 4px 4px 0 0;
+  background: transparent; color: var(--muted); font-size: 14px;
 }
-.tab[aria-selected="true"] { border-color: var(--teal); background: var(--sage); color: var(--teal); }
+.tab:hover { color: var(--teal); }
+.tab[aria-selected="true"] { border-color: var(--line); background: var(--white); color: var(--ink); }
+[role="tabpanel"] > .fig { border-top-left-radius: 0; }
 
 /* Interactive figures: every figure uses the same parts, in this order:
-   model line, plots (label or legend above each), controls, readout, status, caption. */
+   title and lead (with any key equation), plots (label or legend above each),
+   controls, readout, status, caption. */
 .fig {
   margin: 0; padding: 24px; background: var(--white); border: 1px solid var(--line); border-radius: 4px;
   font-family: var(--sans); font-size: 15px; line-height: 1.55; color: var(--ink);
 }
 .fig svg, .fig canvas { display: block; width: 100%; height: auto; }
-.fig-model { margin: 0 0 18px; font-size: 14.5px; color: var(--body); overflow-x: auto; overflow-y: hidden; }
-.fig-model > div + div { margin-top: 2px; }
+.fig .katex svg { height: inherit; } /* KaTeX draws radicals and wide accents as SVG */
+.fig-head { margin: 0 0 20px; }
+.fig-title { margin: 0; font-family: var(--serif); font-size: 21px; font-weight: 500; line-height: 1.3; color: var(--ink); }
+.fig-lead { margin: 6px 0 0; font-size: 15px; color: var(--body); }
+.fig-eq { margin: 14px 0 0; overflow-x: auto; overflow-y: hidden; color: var(--ink); }
+.fig-eq .katex-display, .fig-eq .katex-display > .katex { margin: 0; text-align: left; }
 .fig-plots {
   display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
   gap: 20px 28px; align-items: start;
@@ -280,7 +288,7 @@ a:hover { color: var(--rust); }
 
 .fig-caption {
   margin-top: 18px; padding-top: 12px; border-top: 1px solid var(--sage);
-  font-size: 14px; color: var(--body); max-width: 80ch;
+  font-size: 14px; color: var(--body);
 }
 .fig button:focus-visible, .fig input:focus-visible { outline: 2px solid var(--rust); outline-offset: 2px; }
 

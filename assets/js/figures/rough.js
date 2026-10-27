@@ -15,7 +15,10 @@
 
   var markup = String.raw`
 <figure class="fig">
-<div class="fig-model">\(\mathrm{d}Y_t = f(Y_t)\,\mathrm{d}\mathbf{X}_t\), \(f(y) = c + \cos y\)</div>
+<div class="fig-head">
+<p class="fig-title">Recovering the driver from the solution</p>
+<p class="fig-lead">For the scalar equation \(\mathrm{d}Y_t = f(Y_t)\,\mathrm{d}\mathbf{X}_t\) with \(f(y) = c + \cos y\), the driver can be read back from noisy observations of the solution using \(\varphi' = 1/f\). When \(c \le 1\), \(f\) has zeros that the solution cannot cross, and the recovery degrades near them.</p>
+</div>
 <div class="fig-plot">
 <ul class="fig-legend">
 <li><span class="sw c-ink"></span>driver \(X\)</li>
@@ -75,8 +78,8 @@
 <div><dt>\(\max_t |\hat X_t - X_t|\)</dt><dd data-text="maxErr"></dd></div>
 <div><dt>Not invertible</dt><dd data-text="invalidLabel"></dd></div>
 </dl>
-<p class="fig-status warn" data-show="hasInvalid" role="status">Some noisy observations lie on or beyond a zero of \(f\), where \(\varphi\) is undefined. They are left as gaps (rust ticks) and excluded from the error.</p>
-<figcaption class="fig-caption">On the interval around \(y_0\) where \(f \ne 0\), \(\varphi(y) = \int_0^y \mathrm{d}u/f(u)\) inverts the solution map, so \(X_t - X_0 = \varphi(Y_t) - \varphi(Y_0)\). Here \(X = 2.2B\) for a Brownian motion \(B\), and observation noise is amplified by \(1/f(Y)\) near the zeros of \(f\).</figcaption>
+<p class="fig-status warn" data-show="hasInvalid" role="status">Some noisy observations lie on or beyond a zero of \(f\), where \(\varphi\) is undefined. They are shown as gaps (rust ticks) and left out of the error.</p>
+<figcaption class="fig-caption">The recovery is \(X_t - X_0 = \varphi(Y_t) - \varphi(Y_0)\) on the interval around \(Y_0\) where \(f \ne 0\). The driver is \(X = 2.2B\) for a Brownian motion \(B\), and observation noise is amplified by \(1/f(Y)\).</figcaption>
 </figure>
 `;
 

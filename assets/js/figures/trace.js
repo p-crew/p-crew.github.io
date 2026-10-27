@@ -4,7 +4,10 @@
 
   var markup = String.raw`
 <figure class="fig">
-<div class="fig-model">\(y_t \mid z_t = k \sim \mathcal{N}(\mu_k, s^2)\), hidden states \(z_t \in \{\mathrm{H}, \mathrm{Q}, \mathrm{PB}, \mathrm{Z}\}\)</div>
+<div class="fig-head">
+<p class="fig-title">Decoding a fluorescence trace</p>
+<p class="fig-lead">In a synthetic two-dye trace, the molecule switches between a high state H and a quenched state Q until one dye photobleaches (PB), then the other (Z). Noise hides the switches; the Viterbi algorithm recovers the most likely sequence of states.</p>
+</div>
 <ul class="fig-legend">
 <li><span class="sw c-grey"></span>observed intensity</li>
 <li><span class="sw c-teal"></span>true state</li>
@@ -42,7 +45,7 @@
 <dl class="fig-readout">
 <div><dt>Frames decoded correctly</dt><dd data-text="acc"></dd></div>
 </dl>
-<figcaption class="fig-caption">A synthetic trace: the molecule switches between a high state H and a quenched state Q until one dye photobleaches (PB), then the other (Z). Viterbi finds the most likely state sequence under the true model. Levels and rates are illustrative; no project data is shown.</figcaption>
+<figcaption class="fig-caption">A four-state hidden Markov model with Gaussian emissions \(\mathcal{N}(\mu_k, s^2)\), decoded with its true parameters. Levels and rates are illustrative; no project data is shown.</figcaption>
 </figure>
 `;
 

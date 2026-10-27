@@ -13,6 +13,10 @@
 
   var markup = String.raw`
 <figure class="fig">
+<div class="fig-head">
+<p class="fig-title">Regularising the singular couplings</p>
+<p class="fig-lead">The consumption feedback and the terminal condition both blow up as wealth reaches zero. Shifting their arguments by \(\varepsilon > 0\) makes them bounded and Lipschitz; move \(\varepsilon\) towards zero to see the singular maps return.</p>
+</div>
 <ul class="fig-legend">
 <li><span class="sw c-teal"></span>regularised, \(\varepsilon > 0\)</li>
 <li><span class="sw dash c-grey"></span>singular, \(\varepsilon = 0\)</li>
@@ -65,7 +69,7 @@
 </div>
 <p class="fig-status" data-show="ok">\(\gamma_2 \le \gamma_1\): covered by the short-time well-posedness result.</p>
 <p class="fig-status warn" data-show="notOk">\(\gamma_2 > \gamma_1\): outside the short-time well-posedness result.</p>
-<figcaption class="fig-caption">For each \(\varepsilon > 0\) the regularised couplings, with \(x^+ = \max(x, 0)\), are monotone and globally Lipschitz. Log scale; \(\lambda = 1\).</figcaption>
+<figcaption class="fig-caption">For each \(\varepsilon > 0\) the regularised maps, with \(x^+ = \max(x, 0)\), are monotone and globally Lipschitz. Log scale, with \(\lambda = 1\).</figcaption>
 </figure>
 `;
 

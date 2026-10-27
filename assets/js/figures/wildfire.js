@@ -4,7 +4,10 @@
 
   var markup = String.raw`
 <figure class="fig">
-<div class="fig-model">\(\operatorname{logit} q_i = \operatorname{logit} p_i + \beta \sum_{j \sim i} x_j\) on a 4-neighbour grid</div>
+<div class="fig-head">
+<p class="fig-title">Spatial correction of fire probabilities</p>
+<p class="fig-lead">A random forest gives each site a fire probability \(p_i\) independently of its neighbours. The autologistic model adds a neighbour interaction, \(\operatorname{logit} q_i = \operatorname{logit} p_i + \beta\sum_{j \sim i} x_j\), and Gibbs sampling estimates the corrected probabilities.</p>
+</div>
 <ul class="fig-legend">
 <li><span class="sw ramp"></span>probability 0 to 0.8</li>
 <li><span class="sw box c-ink"></span>burning</li>
@@ -33,7 +36,7 @@
 <div><dt>Mean corrected</dt><dd data-text="meanQ"></dd></div>
 <div><dt>Sweeps</dt><dd data-text="sweeps"></dd></div>
 </dl>
-<figcaption class="fig-caption">The random forest treats sites as independent. The autologistic model adds a neighbour term to each site's log-odds; averaging Gibbs samples after 20 burn-in sweeps gives the corrected probabilities. Synthetic 40 × 40 grid; in the project \(\beta\) was fitted by pseudo-likelihood and an approximate likelihood ratio.</figcaption>
+<figcaption class="fig-caption">A synthetic 40 × 40 grid with four-neighbour interactions; the corrected map averages the samples after 20 burn-in sweeps. In the project \(\beta\) was fitted by pseudo-likelihood and an approximate likelihood ratio.</figcaption>
 </figure>
 `;
 

@@ -4,7 +4,11 @@
 
   var markup = String.raw`
 <figure class="fig">
-<div class="fig-model">\(\displaystyle \frac{\mathrm{d}\sigma_i}{\mathrm{d}t} = -\gamma(t)\,\sigma_i + \beta\sum_{j \in \mathcal{N}_i} S_j + D\,\Delta\sigma_i, \qquad \gamma(t) = \gamma_0\,\frac{|\Omega|}{1 + |\Omega| - A(t)}\)</div>
+<div class="fig-head">
+<p class="fig-title">Lesion growth in geographic atrophy</p>
+<p class="fig-lead">Each cell of a hexagonal lattice accumulates stress \(\sigma_i\) from its dead neighbours (\(S_j = 1\)) and dies once the stress passes its threshold \(\theta_i\). Stress is cleared faster as the lesion area \(A(t)\) grows:</p>
+<div class="fig-eq">\[\begin{aligned} \frac{\mathrm{d}\sigma_i}{\mathrm{d}t} &= -\gamma(t)\,\sigma_i + \beta\sum_{j \in \mathcal{N}_i} S_j + D\,\Delta\sigma_i, \\ \gamma(t) &= \gamma_0\,\frac{|\Omega|}{1 + |\Omega| - A(t)}. \end{aligned}\]</div>
+</div>
 <div class="fig-plots">
 <div>
 <ul class="fig-legend">
@@ -42,7 +46,7 @@
 </dl>
 </div>
 </div>
-<figcaption class="fig-caption">A cell dies once its stress \(\sigma_i\) exceeds a threshold \(\theta_i\), drawn within 15% of \(\theta\); clearance \(\gamma(t)\) rises with the lesion area \(A(t)\). Near \(\theta \approx 1.15\) the final lesion size jumps, the phase transition found in the project. Illustrative parameters: \(\beta = 0.03\), \(\gamma_0 = 0.005\), \(D = 0.15\).</figcaption>
+<figcaption class="fig-caption">Thresholds \(\theta_i\) are drawn within 15% of \(\theta\). Near \(\theta \approx 1.15\) the final lesion size jumps, the phase transition found in the project. Illustrative parameters \(\beta = 0.03\), \(\gamma_0 = 0.005\), \(D = 0.15\).</figcaption>
 </figure>
 `;
 

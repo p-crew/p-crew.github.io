@@ -7,7 +7,10 @@
 
   var markup = String.raw`
 <figure class="fig">
-<div class="fig-model">\(\mathrm{d}X_t = \mu X_t\,\mathrm{d}t + \sigma X_t\,\mathrm{d}W_t\), \(X_0 = 1\), \(\mu = 1\), \(t \in [0, 1]\)</div>
+<div class="fig-head">
+<p class="fig-title">Strong convergence of Euler–Maruyama and Milstein</p>
+<p class="fig-lead">Geometric Brownian motion has an explicit solution, so the error of each scheme can be measured path by path. Halving the step size halves the Milstein error, but reduces the Euler–Maruyama error only by a factor of about \(\sqrt{2}\).</p>
+</div>
 <ul class="fig-legend">
 <li><span class="sw c-ink"></span>exact</li>
 <li><span class="sw c-rust"></span>Euler–Maruyama</li>
@@ -55,7 +58,7 @@
 <label class="fig-slider"><span>Volatility \(\sigma\) <span class="v" data-text="sigLabel"></span></span>
 <input type="range" min="0.2" max="1.5" step="0.05" aria-label="volatility sigma" data-bind="value:sigma" data-on="input:setSigma"></label>
 </div>
-<figcaption class="fig-caption">The exact solution \(X_t = \exp\big((\mu - \tfrac12\sigma^2)t + \sigma W_t\big)\) gives the error path by path. Euler–Maruyama has strong order \(\tfrac12\); Milstein adds \(\tfrac12\sigma^2 X_n(\Delta W_n^2 - h)\) and has order 1. Both use the same Brownian increments.</figcaption>
+<figcaption class="fig-caption">\(\mathrm{d}X_t = X_t\,\mathrm{d}t + \sigma X_t\,\mathrm{d}W_t\) on \([0, 1]\) with \(X_0 = 1\). Milstein adds the correction \(\tfrac12\sigma^2 X_n(\Delta W_n^2 - h)\) to Euler–Maruyama; both schemes use the same Brownian increments as the exact solution.</figcaption>
 </figure>
 `;
 

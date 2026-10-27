@@ -54,8 +54,8 @@
     <a class="wordmark" href="#top">Peter Crew</a>
     <nav class="nav" aria-label="Main">
       <a href="#research">Research</a>
-      <a href="#talks">Talks</a>
       <a href="#projects">Projects</a>
+      <a href="#talks">Talks</a>
       <a href="#experience">Experience</a>
       <a href="#contact">Contact</a>
       <a class="nav-cv" href="assets/peter-crew-cv.pdf">CV<span class="sr-only"> (PDF)</span></a>
@@ -70,7 +70,7 @@
     <p class="eyebrow">PhD student · University of Bath</p>
     <h1>Peter Crew</h1>
     <p class="lead">I work on stochastic optimal control problems whose optimality conditions lead to forward–backward SDEs with singular coefficients.</p>
-    <p class="note">Before the PhD I worked on rough differential equations and numerical methods for SDEs. Several of the projects below have small interactive figures; open them with the buttons under each one.</p>
+    <p class="note">Before the PhD I worked on rough differential equations and numerical methods for SDEs. Several projects below include small interactive figures.</p>
     <div class="actions">
       <a class="btn btn-solid" href="#research">Research</a>
       <a class="btn btn-line" href="assets/peter-crew-cv.pdf">CV (PDF)</a>
@@ -119,53 +119,14 @@
       <p class="muted">Results so far: existence and uniqueness of an optimal consumption process; small-ball estimates for terminal wealth; a verification theorem for the adjoint FBSDE; local well-posedness for short horizons when \(\gamma_2 \le \gamma_1\); and non-existence for long horizons in some regimes with geometric Brownian income. Current work: global well-posedness, DeepBSDE-type numerics, and extensions with investment.</p>
       <p class="muted small">Supervised by <a href="https://researchportal.bath.ac.uk/en/persons/avi-mayorcas/">Dr Avi Mayorcas</a> and <a href="https://researchportal.bath.ac.uk/en/persons/james-foster/">Dr James Foster</a> · <a href="https://samba.ac.uk/student/peter-crew/">SAMBa project page</a></p>
     </div>
-    <div class="toggles">
-      <button class="tog" type="button" aria-expanded="false" aria-controls="fig-couplings" data-figure="couplings" hidden><span class="ic" aria-hidden="true"></span>Regularised couplings</button>
-      <button class="tog" type="button" aria-expanded="false" aria-controls="fig-nonexist" data-figure="nonexist" hidden><span class="ic" aria-hidden="true"></span>Non-existence with GBM income</button>
+    <button class="tog" type="button" aria-expanded="false" aria-controls="fig-research" data-figure-tabs hidden><span class="ic" aria-hidden="true"></span>Interactive figures</button>
+    <div class="fig-panel" id="fig-research" hidden>
+      <div class="tabs" role="tablist" aria-label="Research figures">
+        <button class="tab" type="button" role="tab" id="tab-couplings" aria-selected="true" aria-controls="tabpanel-research" data-tab="couplings">Regularised couplings</button>
+        <button class="tab" type="button" role="tab" id="tab-nonexist" aria-selected="false" aria-controls="tabpanel-research" data-tab="nonexist" tabindex="-1">Non-existence with GBM income</button>
+      </div>
+      <div id="tabpanel-research" role="tabpanel" aria-labelledby="tab-couplings"></div>
     </div>
-    <div class="fig-panel" id="fig-couplings" hidden></div>
-    <div class="fig-panel" id="fig-nonexist" hidden></div>
-  </div>
-</section>
-
-<section id="talks" class="sec" aria-labelledby="talks-h">
-  <h2 id="talks-h">Talks and posters</h2>
-  <div class="sec-body">
-    <ul class="rows">
-      <li class="row row-group">
-        <span class="group-head"><span class="what">Optimal consumption under singular utilities</span><span class="kind">Poster</span></span>
-        <span class="brace" aria-hidden="true"></span>
-        <span class="date">Jul 2026</span>
-        <span class="venue">SAMBa Conference 2026</span>
-        <span class="date">Jun 2026</span>
-        <span class="venue">3rd Young Summer School on Stochastic Analysis</span>
-      </li>
-      <li class="row">
-        <span class="date">Mar 2026</span>
-        <span><span class="what">Ordinals, cardinals, choice, and other things we pretend not to use</span><span class="kind">Talk</span></span>
-        <span class="venue">PSS, University of Bath</span>
-      </li>
-      <li class="row">
-        <span class="date">Oct 2025</span>
-        <span><span class="what">Stochastic optimal control with singularities: theory, numerics, and applications</span><span class="kind">Talk</span></span>
-        <span class="venue">SAMBa transfer talk, University of Bath</span>
-      </li>
-      <li class="row">
-        <span class="date">Jul 2025</span>
-        <span><span class="what">Recovering drivers from rough solution flows</span><span class="kind">Talk and poster</span></span>
-        <span class="venue">SAMBa Conference 2025</span>
-      </li>
-      <li class="row">
-        <span class="date">May 2025</span>
-        <span><span class="what">Implicit and inverse function theorems for rough differential equations</span><span class="kind">Talk</span></span>
-        <span class="venue">University of Bath</span>
-      </li>
-      <li class="row">
-        <span class="date">Nov 2024</span>
-        <span><span class="what">Rough paths and an inverse problem</span><span class="kind">Talk</span></span>
-        <span class="venue">PSS, University of Bath</span>
-      </li>
-    </ul>
   </div>
 </section>
 
@@ -235,7 +196,7 @@
         <div>
           <h4>Selecting true fluorescence intensity traces from artefacts</h4>
           <p class="meta">Integrative Think Tank · with Dr Charlotte Dodson (Life Sciences, Bath)</p>
-          <p class="desc">Gaussian hidden Markov models, and total-variation denoising with change-point detection, to separate genuine two-dye intensity traces from artefacts.</p>
+          <p class="desc">Single-molecule experiments record two-dye fluorescence traces, many of which are artefacts. We used Gaussian hidden Markov models, and total-variation denoising with change-point detection, to separate the genuine traces from the rest.</p>
           <button class="tog" type="button" aria-expanded="false" aria-controls="fig-trace" data-figure="trace" hidden><span class="ic" aria-hidden="true"></span>Interactive figure</button>
         </div>
       </div>
@@ -259,12 +220,53 @@
         <div>
           <h4>Optimising scanning: decision making in experiments</h4>
           <p class="meta">Integrative Think Tank · with Diamond Light Source</p>
-          <p class="desc">Comparing raster, spiral and Lissajous scan paths by X-ray dose and by the expected time spent in features of interest.</p>
+          <p class="desc">We compared raster, spiral and Lissajous scan paths by the X-ray dose they deliver and by the expected time they spend on features of interest.</p>
           <button class="tog" type="button" aria-expanded="false" aria-controls="fig-scan" data-figure="scan" hidden><span class="ic" aria-hidden="true"></span>Interactive figure</button>
         </div>
       </div>
       <div class="fig-panel" id="fig-scan" hidden></div>
     </article>
+  </div>
+</section>
+
+<section id="talks" class="sec" aria-labelledby="talks-h">
+  <h2 id="talks-h">Talks and posters</h2>
+  <div class="sec-body">
+    <ul class="rows">
+      <li class="row row-group">
+        <span class="group-head"><span class="what">Optimal consumption under singular utilities</span><span class="kind">Poster</span></span>
+        <span class="brace" aria-hidden="true"></span>
+        <span class="date">Jul 2026</span>
+        <span class="venue">SAMBa Conference 2026</span>
+        <span class="date">Jun 2026</span>
+        <span class="venue">3rd Young Summer School on Stochastic Analysis</span>
+      </li>
+      <li class="row">
+        <span class="date">Mar 2026</span>
+        <span><span class="what">Ordinals, cardinals, choice, and other things we pretend not to use</span><span class="kind">Talk</span></span>
+        <span class="venue">PSS, University of Bath</span>
+      </li>
+      <li class="row">
+        <span class="date">Oct 2025</span>
+        <span><span class="what">Stochastic optimal control with singularities: theory, numerics, and applications</span><span class="kind">Talk</span></span>
+        <span class="venue">SAMBa transfer talk, University of Bath</span>
+      </li>
+      <li class="row">
+        <span class="date">Jul 2025</span>
+        <span><span class="what">Recovering drivers from rough solution flows</span><span class="kind">Talk and poster</span></span>
+        <span class="venue">SAMBa Conference 2025</span>
+      </li>
+      <li class="row">
+        <span class="date">May 2025</span>
+        <span><span class="what">Implicit and inverse function theorems for rough differential equations</span><span class="kind">Talk</span></span>
+        <span class="venue">University of Bath</span>
+      </li>
+      <li class="row">
+        <span class="date">Nov 2024</span>
+        <span><span class="what">Rough paths and an inverse problem</span><span class="kind">Talk</span></span>
+        <span class="venue">PSS, University of Bath</span>
+      </li>
+    </ul>
   </div>
 </section>
 

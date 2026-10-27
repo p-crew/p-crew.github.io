@@ -70,7 +70,7 @@
     });
   });
 
-  // Tabbed figures (the dissertation has two).
+  // Tabbed figures: one button opens a panel showing one figure at a time.
   document.querySelectorAll('[data-figure-tabs]').forEach(function (button) {
     var panel = document.getElementById(button.getAttribute('aria-controls'));
     var tabs = Array.prototype.slice.call(panel.querySelectorAll('[role="tab"]'));
